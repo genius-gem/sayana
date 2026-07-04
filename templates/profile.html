@@ -1,0 +1,320 @@
+{% extends "base.html" %}
+
+{% block title %}Profile & Reminders{% endblock %}
+
+{% block page_title %}
+Profile & Reminders
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/profile.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<!-- PROFILE HEADER -->
+
+<section class="profile-banner">
+
+    <div class="profile-info">
+
+        <div class="profile-avatar">
+            SJ
+        </div>
+
+        <div>
+
+            <h1>Sarah Johnson</h1>
+
+            <p>
+                Stay informed. Stay protected.
+            </p>
+
+        </div>
+
+    </div>
+
+    <button class="btn btn-primary">
+        Edit Profile
+    </button>
+
+</section>
+
+<!-- PROFILE OVERVIEW -->
+
+<section class="overview-section">
+
+    <div class="grid grid-4">
+
+        <div class="overview-card">
+
+            <i class="fas fa-calendar-check"></i>
+
+            <h3>15 Jul 2026</h3>
+
+            <span>Next Injection</span>
+
+        </div>
+
+        <div class="overview-card">
+
+            <i class="fas fa-bell"></i>
+
+            <h3>Active</h3>
+
+            <span>Reminder Status</span>
+
+        </div>
+
+        <div class="overview-card">
+
+            <i class="fab fa-whatsapp"></i>
+
+            <h3>Enabled</h3>
+
+            <span>WhatsApp Alerts</span>
+
+        </div>
+
+        <div class="overview-card">
+
+            <i class="fas fa-chart-line"></i>
+
+            <h3>95%</h3>
+
+            <span>Adherence Rate</span>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- MAIN GRID -->
+
+<section class="profile-grid">
+
+    <div class="grid grid-2">
+
+        <!-- PERSONAL INFO -->
+
+        <div class="card">
+
+            <div class="section-header">
+                <h2>Personal Information</h2>
+            </div>
+
+            <form>
+
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" value="Sarah Johnson">
+                </div>
+
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="email" value="sarah@email.com">
+                </div>
+
+                <div class="input-group">
+                    <label>Phone Number</label>
+                    <input type="text" value="+2348012345678">
+                </div>
+
+                <div class="input-group">
+                    <label>Location</label>
+                    <input type="text" value="Ibadan, Nigeria">
+                </div>
+
+            </form>
+
+        </div>
+
+        <!-- INJECTION SCHEDULE -->
+
+        <div class="card">
+
+            <div class="section-header">
+                <h2>Injection Schedule</h2>
+            </div>
+
+            <div class="schedule-box">
+
+                <div class="schedule-item">
+                    <span>Last Injection</span>
+                    <strong>15 April 2026</strong>
+                </div>
+
+                <div class="schedule-item">
+                    <span>Next Injection</span>
+                    <strong>15 July 2026</strong>
+                </div>
+
+                <div class="schedule-item">
+                    <span>Days Remaining</span>
+                    <strong>24 Days</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- REMINDER SETTINGS -->
+
+<section class="reminder-section">
+
+    <div class="card">
+
+        <div class="section-header">
+            <h2>Reminder Preferences</h2>
+        </div>
+
+        <div class="reminder-options">
+
+            <label class="switch-card">
+
+                <div>
+                    <h4>WhatsApp Notifications</h4>
+                    <p>
+                        Receive reminder messages through WhatsApp.
+                    </p>
+                </div>
+
+                <input type="checkbox" checked>
+
+            </label>
+
+            <label class="switch-card">
+
+                <div>
+                    <h4>SMS Notifications</h4>
+                    <p>
+                        Receive reminder messages via SMS.
+                    </p>
+                </div>
+
+                <input type="checkbox" checked>
+
+            </label>
+
+            <label class="switch-card">
+
+                <div>
+                    <h4>Email Notifications</h4>
+                    <p>
+                        Receive reminder emails.
+                    </p>
+                </div>
+
+                <input type="checkbox">
+
+            </label>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- NOTIFICATION TIMELINE -->
+
+<section class="timeline-section">
+
+    <div class="card">
+
+        <div class="section-header">
+            <h2>Reminder Timeline</h2>
+        </div>
+
+        <div class="timeline">
+
+            <div class="timeline-item">
+
+                <div class="timeline-dot"></div>
+
+                <div class="timeline-content">
+
+                    <h4>Reminder Scheduled</h4>
+
+                    <p>
+                        8 July 2026
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="timeline-item">
+
+                <div class="timeline-dot"></div>
+
+                <div class="timeline-content">
+
+                    <h4>Reminder Sent</h4>
+
+                    <p>
+                        12 July 2026
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="timeline-item">
+
+                <div class="timeline-dot active"></div>
+
+                <div class="timeline-content">
+
+                    <h4>Injection Due</h4>
+
+                    <p>
+                        15 July 2026
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ACCOUNT SETTINGS -->
+
+<section class="settings-section">
+
+    <div class="card">
+
+        <div class="section-header">
+            <h2>Account Settings</h2>
+        </div>
+
+        <div class="settings-buttons">
+
+            <button class="btn btn-outline">
+                Change Password
+            </button>
+
+            <button class="btn btn-outline">
+                Privacy Settings
+            </button>
+
+            <button class="btn btn-outline">
+                Download My Data
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

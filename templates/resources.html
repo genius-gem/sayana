@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+
+{% block title %}Learn Hub{% endblock %}
+
+{% block page_title %}
+Learn & Resources Hub
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/resources.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="resource-hero">
+
+    <div class="resource-hero-content">
+        <h1>Learn About Sayana Press</h1>
+
+        <p>
+            Explore educational resources, self-injection guides,
+            frequently asked questions, and health information
+            to support your contraceptive journey.
+        </p>
+    </div>
+
+</section>
+
+<!-- SEARCH -->
+<section class="search-section">
+
+    <div class="search-container">
+
+        <i class="fas fa-search"></i>
+
+        <input
+            type="text"
+            placeholder="Search articles, FAQs, guides..."
+        >
+
+    </div>
+
+</section>
+
+<!-- RESOURCE CATEGORIES -->
+<section class="categories-section">
+
+    <div class="section-title">
+        <h2>Resource Categories</h2>
+    </div>
+
+    <div class="grid grid-4">
+
+        <div class="category-card">
+            <i class="fas fa-syringe"></i>
+            <h3>About Sayana Press</h3>
+            <p>Learn what Sayana Press is and how it works.</p>
+        </div>
+
+        <div class="category-card">
+            <i class="fas fa-hand-holding-medical"></i>
+            <h3>Self Injection</h3>
+            <p>Step-by-step injection instructions.</p>
+        </div>
+
+        <div class="category-card">
+            <i class="fas fa-heartbeat"></i>
+            <h3>Side Effects</h3>
+            <p>Understand possible side effects.</p>
+        </div>
+
+        <div class="category-card">
+            <i class="fas fa-question-circle"></i>
+            <h3>FAQs</h3>
+            <p>Answers to common questions.</p>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- FEATURED ARTICLES -->
+<section class="articles-section">
+
+    <div class="section-title">
+        <h2>Featured Articles</h2>
+    </div>
+
+    <div class="grid grid-3">
+
+        <div class="article-card">
+
+            <div class="article-image">
+                <i class="fas fa-book-medical"></i>
+            </div>
+
+            <div class="article-content">
+
+                <span class="tag">Beginner Guide</span>
+
+                <h3>Understanding Sayana Press</h3>
+
+                <p>
+                    Learn how Sayana Press works,
+                    benefits, effectiveness,
+                    and eligibility.
+                </p>
+
+                <a href="#" class="read-more">
+                    Read More →
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="article-card">
+
+            <div class="article-image">
+                <i class="fas fa-syringe"></i>
+            </div>
+
+            <div class="article-content">
+
+                <span class="tag">Tutorial</span>
+
+                <h3>Self Injection Guide</h3>
+
+                <p>
+                    Follow simple instructions for
+                    safe and confident self-injection.
+                </p>
+
+                <a href="#" class="read-more">
+                    Read More →
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="article-card">
+
+            <div class="article-image">
+                <i class="fas fa-notes-medical"></i>
+            </div>
+
+            <div class="article-content">
+
+                <span class="tag">Health</span>
+
+                <h3>Managing Side Effects</h3>
+
+                <p>
+                    Understand common side effects
+                    and when to seek help.
+                </p>
+
+                <a href="#" class="read-more">
+                    Read More →
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- VIDEO SECTION -->
+<section class="video-section">
+
+    <div class="section-title">
+        <h2>Video Tutorials</h2>
+    </div>
+
+    <div class="grid grid-2">
+
+        <div class="video-card">
+
+            <div class="video-placeholder">
+                <i class="fas fa-play-circle"></i>
+            </div>
+
+            <h3>How to Self Inject Sayana Press</h3>
+
+        </div>
+
+        <div class="video-card">
+
+            <div class="video-placeholder">
+                <i class="fas fa-play-circle"></i>
+            </div>
+
+            <h3>Understanding Contraceptive Options</h3>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- FAQ SECTION -->
+<section class="faq-section">
+
+    <div class="section-title">
+        <h2>Frequently Asked Questions</h2>
+    </div>
+
+    <div class="faq-container">
+
+        <details class="faq-item">
+            <summary>
+                What is Sayana Press?
+            </summary>
+            <p>
+                Sayana Press is an injectable contraceptive
+                that prevents pregnancy for up to 3 months.
+            </p>
+        </details>
+
+        <details class="faq-item">
+            <summary>
+                How often should I take Sayana Press?
+            </summary>
+            <p>
+                One injection is usually required every
+                3 months.
+            </p>
+        </details>
+
+        <details class="faq-item">
+            <summary>
+                What if I miss my injection date?
+            </summary>
+            <p>
+                Contact your healthcare provider
+                as soon as possible.
+            </p>
+        </details>
+
+        <details class="faq-item">
+            <summary>
+                Can Sayana Press stop my monthly flow?
+            </summary>
+            <p>
+                Changes in menstrual bleeding patterns
+                can occur while using Sayana Press.
+            </p>
+        </details>
+
+    </div>
+
+</section>
+
+{% endblock %}

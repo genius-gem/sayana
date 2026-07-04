@@ -1,0 +1,380 @@
+
+/* ==========================
+   AUTH PAGE LAYOUT
+========================== */
+
+.auth-page{
+
+    min-height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:40px 20px;
+
+    position:relative;
+    z-index:2;
+}
+
+/* ==========================
+   BACKGROUND
+========================== */
+
+.auth-bg{
+
+    position:fixed;
+
+    inset:0;
+
+    overflow:hidden;
+
+    background:
+    linear-gradient(
+        135deg,
+        #faf5ff,
+        #fdf2f8
+    );
+
+    z-index:1;
+}
+
+.circle{
+
+    position:absolute;
+
+    border-radius:50%;
+
+    filter:blur(50px);
+
+    opacity:.5;
+}
+
+.circle-1{
+
+    width:350px;
+    height:350px;
+
+    background:#7C3AED;
+
+    top:-100px;
+    left:-100px;
+}
+
+.circle-2{
+
+    width:300px;
+    height:300px;
+
+    background:#EC4899;
+
+    bottom:-100px;
+    right:-50px;
+}
+
+.circle-3{
+
+    width:250px;
+    height:250px;
+
+    background:#C084FC;
+
+    top:40%;
+    left:50%;
+}
+
+.auth-container{
+
+    min-height:calc(100vh - 140px);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:40px 20px;
+}
+
+.auth-card{
+
+    width:100%;
+    max-width:500px;
+
+    background:white;
+
+    padding:40px;
+
+    border-radius:24px;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.08);
+}
+
+.register-card{
+    max-width:600px;
+}
+
+/* ==========================
+   HEADER
+========================== */
+
+.auth-header{
+
+    text-align:center;
+
+    margin-bottom:30px;
+}
+
+.auth-logo{
+
+    width:80px;
+    height:80px;
+
+    margin:auto auto 20px;
+
+    border-radius:50%;
+
+    background:
+    linear-gradient(
+        135deg,
+        #7C3AED,
+        #EC4899
+    );
+
+    color:white;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-size:32px;
+}
+
+.auth-header h1{
+
+    margin-bottom:10px;
+
+    color:#2D1B46;
+}
+
+.auth-header p{
+
+    color:#6B7280;
+}
+
+/* ==========================
+   PASSWORD
+========================== */
+
+.password-field{
+
+    position:relative;
+}
+
+.password-field input{
+    padding-right:50px;
+}
+
+.password-toggle{
+
+    position:absolute;
+
+    top:50%;
+    right:15px;
+
+    transform:translateY(-50%);
+
+    border:none;
+    background:none;
+
+    cursor:pointer;
+
+    color:#6B7280;
+}
+
+/* ==========================
+   OPTIONS
+========================== */
+
+.auth-options{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:20px;
+
+    font-size:14px;
+}
+
+.auth-options a{
+
+    color:#EC4899;
+    font-weight:500;
+}
+
+.remember-me{
+
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+/* ==========================
+   BUTTON
+========================== */
+
+.auth-btn{
+
+    width:100%;
+
+    border:none;
+
+    padding:15px;
+
+    border-radius:14px;
+
+    cursor:pointer;
+
+    font-size:15px;
+    font-weight:600;
+
+    color:white;
+
+    background:
+    linear-gradient(
+        135deg,
+        #7C3AED,
+        #EC4899
+    );
+
+    transition:.3s;
+}
+
+.auth-btn:hover{
+    transform:translateY(-2px);
+}
+
+/* ==========================
+   DIVIDER
+========================== */
+
+.auth-divider{
+
+    position:relative;
+
+    text-align:center;
+
+    margin:25px 0;
+}
+
+.auth-divider::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:50%;
+    left:0;
+
+    width:100%;
+    height:1px;
+
+    background:#E5E7EB;
+}
+
+.auth-divider span{
+
+    position:relative;
+
+    background:white;
+
+    padding:0 15px;
+
+    color:#6B7280;
+}
+
+/* ==========================
+   GOOGLE BUTTON
+========================== */
+
+.google-btn{
+
+    width:100%;
+
+    padding:15px;
+
+    border:1px solid #E5E7EB;
+
+    background:white;
+
+    border-radius:14px;
+
+    cursor:pointer;
+
+    font-weight:500;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+
+    transition:.3s;
+}
+
+.google-btn:hover{
+    background:#F9FAFB;
+}
+
+/* ==========================
+   TERMS
+========================== */
+
+.terms-check{
+
+    display:flex;
+    gap:10px;
+
+    margin-bottom:20px;
+
+    font-size:14px;
+
+    color:#6B7280;
+}
+
+/* ==========================
+   FOOTER
+========================== */
+
+.auth-footer{
+
+    margin-top:25px;
+
+    text-align:center;
+
+    color:#6B7280;
+}
+
+.auth-footer a{
+
+    color:#EC4899;
+
+    font-weight:600;
+}
+
+/* ==========================
+   MOBILE
+========================== */
+
+@media(max-width:768px){
+
+    .auth-card{
+        padding:30px 25px;
+    }
+
+    .auth-options{
+
+        flex-direction:column;
+        gap:15px;
+
+        align-items:flex-start;
+    }
+}

@@ -1,0 +1,295 @@
+{% extends "base.html" %}
+
+{% block title %}
+AI Assistant
+{% endblock %}
+
+{% block page_title %}
+AI Health Assistant
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/chat.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="whatsapp-chat-container">
+
+    <!-- CHAT HEADER -->
+
+    <div class="chat-header">
+
+        <div class="assistant-avatar">
+            🤖
+        </div>
+
+        <div class="assistant-details">
+
+            <h3>SayanaBot</h3>
+
+            <span>
+                Healthcare Assistant • Online
+            </span>
+
+        </div>
+
+    </div>
+
+    <!-- CHAT BODY -->
+
+    <div
+        class="chat-body"
+        id="chatBody"
+    >
+
+        <div class="bot-message">
+
+            <div class="message-content">
+
+                <strong>
+                    Hello 👋
+                </strong>
+
+
+                I am SayanaBot, your Sayana Press healthcare assistant.
+
+                <br>
+
+                I can help you with:
+
+                <ul>
+
+                    <li>Sayana Press Information</li>
+
+                    <li>Self Injection Guidance</li>
+
+                    <li>Side Effects</li>
+
+                    <li>Missed Injections</li>
+
+                    <li>Pregnancy & Breastfeeding</li>
+
+                    <li>Family Planning</li>
+
+                </ul>
+
+                Ask me a question to get started.
+
+            </div>
+
+        </div>
+
+    </div>
+
+  <!-- INPUT AREA -->
+<div class="chat-input-container">
+    <form id="chatForm" class="chat-form">
+        <input
+            type="text"
+            id="userInput"
+            class="chat-input"
+            placeholder="Type your message..."
+        >
+        <button type="submit" class="send-btn">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </form>
+</div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<script>
+
+const form =
+    document.getElementById(
+        "chatForm"
+    );
+
+const input =
+    document.getElementById(
+        "userInput"
+    );
+
+const chatBody =
+    document.getElementById(
+        "chatBody"
+    );
+
+
+function addUserMessage(message){
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.classList.add(
+        "user-message"
+    );
+
+    wrapper.innerHTML = `
+        <div class="message-content">
+            ${message}
+        </div>
+    `;
+
+    chatBody.appendChild(
+        wrapper
+    );
+}
+
+
+function addBotMessage(message){
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.classList.add(
+        "bot-message"
+    );
+
+    wrapper.innerHTML = `
+        <div class="message-content">
+            ${marked.parse(message)}
+        </div>
+    `;
+
+    chatBody.appendChild(
+        wrapper
+    );
+}
+
+
+function addLoadingMessage(){
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.classList.add(
+        "bot-message"
+    );
+
+    wrapper.id =
+        "loadingMessage";
+
+    wrapper.innerHTML = `
+        <div class="message-content">
+            Typing...
+        </div>
+    `;
+
+    chatBody.appendChild(
+        wrapper
+    );
+}
+
+
+function removeLoadingMessage(){
+
+    const loading =
+        document.getElementById(
+            "loadingMessage"
+        );
+
+    if(loading){
+
+        loading.remove();
+    }
+}
+
+
+function scrollToBottom(){
+
+    chatBody.scrollTop =
+        chatBody.scrollHeight;
+}
+
+
+form.addEventListener(
+
+    "submit",
+
+    async function(event){
+
+        event.preventDefault();
+
+        const question =
+            input.value.trim();
+
+        if(!question){
+
+            return;
+        }
+
+        addUserMessage(
+            question
+        );
+
+        input.value = "";
+
+        scrollToBottom();
+
+        addLoadingMessage();
+
+        scrollToBottom();
+
+        try{
+
+            const response =
+                await fetch(
+                    "/ask",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                            "application/json"
+                        },
+
+                        body:
+                        JSON.stringify({
+                            question:
+                            question
+                        })
+                    }
+                );
+
+            const data =
+                await response.json();
+
+            removeLoadingMessage();
+
+            addBotMessage(
+                data.answer
+            );
+
+            scrollToBottom();
+
+        }
+
+        catch(error){
+
+            removeLoadingMessage();
+
+            addBotMessage(
+                "Sorry, I am unable to connect to the server."
+            );
+
+            console.error(
+                error
+            );
+        }
+
+    }
+
+);
+
+</script>
+
+{% endblock %}

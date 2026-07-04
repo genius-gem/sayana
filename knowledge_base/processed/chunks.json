@@ -1,0 +1,110 @@
+[
+  {
+    "id": 1,
+    "category": "General Information",
+    "title": "What is Sayana Press?",
+    "content": "Sayana Press is a contraceptive injection used to prevent pregnancy. It contains depot medroxyprogesterone acetate (DMPA) and is administered as a subcutaneous injection."
+  },
+  {
+    "id": 2,
+    "category": "General Information",
+    "title": "How does Sayana Press work?",
+    "content": "Sayana Press prevents pregnancy by preventing ovulation, thickening cervical mucus to block sperm, and thinning the lining of the uterus."
+  },
+  {
+    "id": 3,
+    "category": "General Information",
+    "title": "How effective is Sayana Press?",
+    "content": "When used correctly and every 13 weeks, Sayana Press is more than 99% effective in preventing pregnancy."
+  },
+  {
+    "id": 4,
+    "category": "General Information",
+    "title": "How often is Sayana Press administered?",
+    "content": "One injection is required every 13 weeks, which is approximately every three months."
+  },
+  {
+    "id": 5,
+    "category": "General Information",
+    "title": "Is Sayana Press the same as Depo-Provera?",
+    "content": "Both contain DMPA, but Sayana Press uses a smaller needle, is injected under the skin, and can be self-administered after proper training."
+  },
+  {
+    "id": 6,
+    "category": "Use and Administration",
+    "title": "Injection sites",
+    "content": "Sayana Press can be injected into the thigh, abdomen, or upper arm."
+  },
+  {
+    "id": 7,
+    "category": "Use and Administration",
+    "title": "Self-injection",
+    "content": "Many women can safely self-inject Sayana Press after receiving proper training from a healthcare professional."
+  },
+  {
+    "id": 8,
+    "category": "Use and Administration",
+    "title": "Storage",
+    "content": "Store Sayana Press at room temperature, away from direct sunlight, and out of the reach of children."
+  },
+  {
+    "id": 9,
+    "category": "Eligibility",
+    "title": "Who can use Sayana Press?",
+    "content": "Most women can use Sayana Press, including women who have children, women seeking birth spacing, breastfeeding mothers after six weeks postpartum, and eligible adolescents."
+  },
+  {
+    "id": 10,
+    "category": "Eligibility",
+    "title": "Who should not use Sayana Press?",
+    "content": "Women with unexplained vaginal bleeding, breast cancer, severe liver disease, or allergy to DMPA should consult a healthcare provider before using Sayana Press."
+  },
+  {
+    "id": 11,
+    "category": "Breastfeeding",
+    "title": "Can breastfeeding mothers use Sayana Press?",
+    "content": "Yes. Sayana Press is generally considered safe for breastfeeding mothers after six weeks postpartum."
+  },
+  {
+    "id": 12,
+    "category": "Side Effects",
+    "title": "Common side effects",
+    "content": "Common side effects include irregular menstrual bleeding, amenorrhea, weight gain, headache, mood changes, breast tenderness, dizziness, fatigue, mild abdominal discomfort, and reduced sexual desire."
+  },
+  {
+    "id": 13,
+    "category": "Pregnancy and Fertility",
+    "title": "Can Sayana Press cause infertility?",
+    "content": "No. Fertility usually returns after discontinuing Sayana Press, although it may take several months."
+  },
+  {
+    "id": 14,
+    "category": "Missed Injections",
+    "title": "What should I do if I miss my injection?",
+    "content": "Visit a healthcare facility as soon as possible. If less than four weeks late, you may usually continue with your injection. If significantly late, pregnancy may need to be ruled out before another injection."
+  },
+  {
+    "id": 15,
+    "category": "STIs",
+    "title": "Does Sayana Press protect against STIs?",
+    "content": "No. Sayana Press prevents pregnancy but does not protect against HIV, gonorrhea, chlamydia, syphilis, or other sexually transmitted infections. Condom use is recommended."
+  },
+  {
+    "id": 16,
+    "category": "Myths and Facts",
+    "title": "Does Sayana Press cause permanent infertility?",
+    "content": "No. Fertility usually returns after stopping Sayana Press. There is no scientific evidence that it causes permanent infertility."
+  },
+  {
+    "id": 17,
+    "category": "Emergency",
+    "title": "Emergency warning signs",
+    "content": "Seek immediate medical attention if you experience heavy uncontrolled bleeding, severe chest pain, difficulty breathing, severe headache with vision changes, severe abdominal pain, high fever, signs of allergic reaction, or fainting."
+  },
+  {
+    "id": 18,
+    "category": "Digital Health",
+    "title": "Why are reminder systems important?",
+    "content": "Reminder systems help users remember injection dates, track side effects, access educational information, and receive follow-up support."
+  }
+]

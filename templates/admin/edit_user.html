@@ -1,0 +1,291 @@
+{% extends "admin/base.html" %}
+
+{% block title %}
+Edit User
+{% endblock %}
+
+{% block page_title %}
+Edit User
+{% endblock %}
+
+{% block content %}
+
+<!-- ====================================================== -->
+<!-- PAGE HEADER -->
+<!-- ====================================================== -->
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Edit User</h2>
+
+        <p>
+            Update user profile and reminder preferences.
+        </p>
+
+    </div>
+
+    <a
+        href="{{ url_for('admin.users') }}"
+        class="btn btn-outline">
+
+        <i class="fas fa-arrow-left"></i>
+
+        Back to Users
+
+    </a>
+
+</div>
+
+
+<!-- ====================================================== -->
+<!-- EDIT FORM -->
+<!-- ====================================================== -->
+
+<div class="card">
+
+    <form
+        method="POST"
+        action="{{ url_for('admin.update_user', user_id=user.id) }}"
+    >
+
+        <div class="grid grid-2">
+
+            <!-- Full Name -->
+
+            <div class="input-group">
+
+                <label>
+
+                    Full Name
+
+                </label>
+
+                <input
+                    type="text"
+                    name="full_name"
+                    value="{{ user.full_name }}"
+                    required
+                >
+
+            </div>
+
+            <!-- Email -->
+
+            <div class="input-group">
+
+                <label>
+
+                    Email Address
+
+                </label>
+
+                <input
+                    type="email"
+                    name="email"
+                    value="{{ user.email }}"
+                    required
+                >
+
+            </div>
+
+            <!-- Phone -->
+
+            <div class="input-group">
+
+                <label>
+
+                    Phone Number
+
+                </label>
+
+                <input
+                    type="text"
+                    name="phone"
+                    value="{{ user.phone }}"
+                >
+
+            </div>
+
+            <!-- Location -->
+
+            <div class="input-group">
+
+                <label>
+
+                    Location
+
+                </label>
+
+                <input
+                    type="text"
+                    name="location"
+                    value="{{ user.location }}"
+                >
+
+            </div>
+
+        </div>
+
+
+        <hr class="section-divider">
+
+
+        <h3>
+
+            Reminder Settings
+
+        </h3>
+
+        <br>
+
+        <div class="grid grid-2">
+
+            <div class="input-group">
+
+                <label>
+
+                    Last Injection
+
+                </label>
+
+                <input
+                    type="text"
+                    value="{% if reminder %}{{ reminder.last_injection_date.strftime('%d %B %Y') }}{% else %}Not Available{% endif %}"
+                    readonly
+                >
+
+            </div>
+            
+
+            <div class="input-group">
+
+                <label>
+
+                    Next Injection
+
+                </label>
+
+                <input
+                    type="text"
+                    value="{% if reminder %}{{ reminder.next_injection_date.strftime('%d %B %Y') }}{% else %}Not Set{% endif %}"
+                    readonly
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="grid grid-2">
+
+            <div class="input-group">
+
+                <label>
+
+                    WhatsApp Reminder
+
+                </label>
+
+                <label class="switch">
+
+                    <input
+                        type="checkbox"
+                        name="whatsapp_enabled"
+                        {% if user.whatsapp_enabled %}checked{% endif %}
+                    >
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+            <div class="input-group">
+
+                <label>
+
+                    Email Reminder
+
+                </label>
+
+                <label class="switch">
+
+                    <input
+                        type="checkbox"
+                        name="email_enabled"
+                        {% if user.email_enabled %}checked{% endif %}
+                    >
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+        </div>
+
+        <hr class="section-divider">
+
+<h3>
+
+    Account Settings
+
+</h3>
+
+<br>
+
+<div class="grid grid-2">
+
+    <div class="input-group">
+
+        <label>
+
+            Account Status
+
+        </label>
+
+        <label class="switch">
+
+            <input
+                type="checkbox"
+                name="is_active"
+                {% if user.is_active %}checked{% endif %}
+            >
+
+            <span class="slider"></span>
+
+        </label>
+
+    </div>
+
+</div>
+
+        <div class="form-actions">
+
+            <button
+                type="submit"
+                class="btn btn-primary">
+
+                <i class="fas fa-save"></i>
+
+                Save Changes
+
+            </button>
+
+            <a
+                href="{{ url_for('admin.view_user', user_id=user.id) }}"
+                class="btn btn-outline">
+
+                Cancel
+
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

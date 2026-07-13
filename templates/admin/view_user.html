@@ -1,0 +1,432 @@
+{% extends "admin/base.html" %}
+
+{% block title %}
+User Details
+{% endblock %}
+
+{% block page_title %}
+User Details
+{% endblock %}
+
+{% block content %}
+
+<!-- ====================================================== -->
+<!-- PAGE HEADER -->
+<!-- ====================================================== -->
+
+<div class="page-header">
+
+    <div>
+
+        <h2>{{ user.full_name }}</h2>
+
+        <p>
+            Complete user profile, reminder history and chatbot activity.
+        </p>
+
+    </div>
+
+    <div>
+
+        <a
+            href="{{ url_for('admin.edit_user', user_id=user.id) }}"
+            class="btn btn-primary">
+
+            <i class="fas fa-edit"></i>
+
+            Edit User
+
+        </a>
+
+        <a
+            href="{{ url_for('admin.users') }}"
+            class="btn btn-outline">
+
+            <i class="fas fa-arrow-left"></i>
+
+            Back
+
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- ====================================================== -->
+<!-- USER SUMMARY -->
+<!-- ====================================================== -->
+
+<div class="grid grid-4">
+
+    <div class="card stat-card">
+
+        <i class="fas fa-user fa-2x"></i>
+
+        <h3>{{ user.full_name }}</h3>
+
+        <p>User</p>
+
+    </div>
+
+    <div class="card stat-card">
+
+        <i class="fas fa-comments fa-2x"></i>
+
+        <h3>{{ chats|length }}</h3>
+
+        <p>Recent Chats</p>
+
+    </div>
+
+    <div class="card stat-card">
+
+        <i class="fas fa-history fa-2x"></i>
+
+        <h3>{{ activities|length }}</h3>
+
+        <p>Activities</p>
+
+    </div>
+
+    <div class="card stat-card">
+
+        <i class="fas fa-bell fa-2x"></i>
+
+        {% if reminder %}
+            <h3>{{ reminder.status() }}</h3>
+        {% else %}
+            <h3>No Reminder</h3>
+        {% endif %}
+
+        <p>Reminder Status</p>
+
+    </div>
+
+</div>
+
+
+<br>
+
+
+<!-- ====================================================== -->
+<!-- PROFILE INFORMATION -->
+<!-- ====================================================== -->
+
+<div class="card">
+
+    <h3>User Information</h3>
+
+    <br>
+
+    <table class="table">
+
+        <tr>
+
+            <th>Full Name</th>
+
+            <td>{{ user.full_name }}</td>
+
+        </tr>
+
+        <tr>
+
+            <th>Email</th>
+
+            <td>{{ user.email }}</td>
+
+        </tr>
+
+        <tr>
+
+            <th>Phone</th>
+
+            <td>{{ user.phone }}</td>
+
+        </tr>
+
+        <tr>
+
+            <th>Location</th>
+
+            <td>{{ user.location }}</td>
+
+        </tr>
+
+        <tr>
+
+            <th>WhatsApp Alerts</th>
+
+            <td>
+
+                {% if user.whatsapp_enabled %}
+
+                    <span class="badge success">
+
+                        Enabled
+
+                    </span>
+
+                {% else %}
+
+                    <span class="badge danger">
+
+                        Disabled
+
+                    </span>
+
+                {% endif %}
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <th>Email Alerts</th>
+
+            <td>
+
+                {% if user.email_enabled %}
+
+                    <span class="badge success">
+
+                        Enabled
+
+                    </span>
+
+                {% else %}
+
+                    <span class="badge danger">
+
+                        Disabled
+
+                    </span>
+
+                {% endif %}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+</div>
+
+
+<br>
+
+
+<!-- ====================================================== -->
+<!-- REMINDER DETAILS -->
+<!-- ====================================================== -->
+
+<div class="card">
+
+    <h3>Reminder Information</h3>
+
+    <br>
+
+    {% if reminder %}
+
+    <table class="table">
+
+        <tr>
+
+            <th>Last Injection</th>
+
+            <td>
+
+                {{ reminder.last_injection_date.strftime("%d %B %Y") }}
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <th>Next Injection</th>
+
+            <td>
+
+                {{ reminder.next_injection_date.strftime("%d %B %Y") }}
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <th>Status</th>
+
+            <td>
+
+                <span class="badge primary">
+
+                    {{ reminder.status() }}
+
+                </span>
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <th>Reminder Created</th>
+
+            <td>
+
+                {{ reminder.created_at.strftime("%d %B %Y %I:%M %p") }}
+
+            </td>
+
+        </tr>
+
+    </table>
+
+    {% else %}
+
+        <p>No reminder has been created for this user.</p>
+
+    {% endif %}
+
+</div>
+
+
+<br>
+
+
+<!-- ====================================================== -->
+<!-- RECENT CHAT HISTORY -->
+<!-- ====================================================== -->
+
+<div class="card">
+
+    <h3>Recent Chat History</h3>
+
+    <br>
+
+    {% if chats %}
+
+    <table class="table">
+
+        <thead>
+
+            <tr>
+
+                <th>Date</th>
+
+                <th>Question</th>
+
+                <th>Answer</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for chat in chats %}
+
+        <tr>
+
+            <td>
+
+                {{ chat.created_at.strftime("%d %b %Y") }}
+
+            </td>
+
+            <td>
+
+                {{ chat.question }}
+
+            </td>
+
+            <td>
+
+                {{ chat.answer[:120] }}...
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% else %}
+
+        <p>No chat history available.</p>
+
+    {% endif %}
+
+</div>
+
+
+<br>
+
+
+<!-- ====================================================== -->
+<!-- USER ACTIVITIES -->
+<!-- ====================================================== -->
+
+<div class="card">
+
+    <h3>Activity Timeline</h3>
+
+    <br>
+
+    {% if activities %}
+
+        <table class="table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Date</th>
+
+                    <th>Activity</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% for activity in activities %}
+
+                <tr>
+
+                    <td>
+
+                        {{ activity.created_at.strftime("%d %b %Y %I:%M %p") }}
+
+                    </td>
+
+                    <td>
+
+                        {{ activity.activity }}
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    {% else %}
+
+        <p>No activity recorded.</p>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,114 @@
+{% extends "admin/base.html" %}
+
+{% block title %}
+Delete User
+{% endblock %}
+
+{% block page_title %}
+Delete User
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Delete User</h2>
+
+        <p>
+
+            This action cannot be undone.
+
+        </p>
+
+    </div>
+
+</div>
+
+<div class="card">
+
+    <div
+        style="
+        background:#FEE2E2;
+        color:#991B1B;
+        padding:20px;
+        border-radius:10px;
+        margin-bottom:25px;
+        "
+    >
+
+        <h3>
+
+            Warning
+
+        </h3>
+
+        <p>
+
+            You are about to permanently delete this user.
+
+        </p>
+
+    </div>
+
+    <table class="admin-table">
+
+        <tr>
+
+            <th>Name</th>
+
+            <td>{{ user.full_name }}</td>
+
+        </tr>
+
+        <tr>
+
+            <th>Email</th>
+
+            <td>{{ user.email }}</td>
+
+        </tr>
+
+        <tr>
+
+            <th>Phone</th>
+
+            <td>{{ user.phone }}</td>
+
+        </tr>
+
+    </table>
+
+    <br>
+
+        <form
+        method="POST"
+        action="{{ url_for('admin.confirm_delete_user', user_id=user.id) }}"
+    >
+
+        <button
+            type="submit"
+            class="btn btn-danger"
+        >
+
+            <i class="fas fa-trash"></i>
+
+            Delete User
+
+        </button>
+
+        <a
+            href="{{ url_for('admin.users') }}"
+            class="btn btn-outline"
+        >
+
+            Cancel
+
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

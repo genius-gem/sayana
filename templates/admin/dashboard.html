@@ -1,0 +1,291 @@
+{% extends "admin/base.html" %}
+
+{% block title %}
+Admin Dashboard
+{% endblock %}
+
+{% block page_title %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+<!-- ==========================================================
+STATISTICS
+========================================================== -->
+
+<div class="cards">
+
+    <div class="card primary">
+
+        <h4>Total Users</h4>
+
+        <h2>{{ total_users }}</h2>
+
+        <p>Registered users</p>
+
+    </div>
+
+    <div class="card success">
+
+        <h4>Active Reminders</h4>
+
+        <h2>{{ active_reminders }}</h2>
+
+        <p>Users with reminders</p>
+
+    </div>
+
+    <div class="card warning">
+
+        <h4>Due Soon</h4>
+
+        <h2>{{ due_soon }}</h2>
+
+        <p>Injection due within 7 days</p>
+
+    </div>
+
+    <div class="card danger">
+
+        <h4>Missed Dose</h4>
+
+        <h2>{{ missed_doses }}</h2>
+
+        <p>Injection date has passed</p>
+
+    </div>
+
+</div>
+
+
+<!-- ==========================================================
+SECOND ROW
+========================================================== -->
+
+<div class="cards">
+
+    <div class="card info">
+
+        <h4>Today's Due</h4>
+
+        <h2>{{ due_today }}</h2>
+
+        <p>Injection due today</p>
+
+    </div>
+
+    <div class="card primary">
+
+        <h4>New Users</h4>
+
+        <h2>{{ new_users }}</h2>
+
+        <p>Registered this month</p>
+
+    </div>
+
+    <div class="card success">
+
+        <h4>AI Chats</h4>
+
+        <h2>{{ total_chats }}</h2>
+
+        <p>Total chatbot conversations</p>
+
+    </div>
+
+    <div class="card warning">
+
+        <h4>Completed</h4>
+
+        <h2>{{ completed_injections }}</h2>
+
+        <p>Updated reminders</p>
+
+    </div>
+
+</div>
+
+
+<!-- ==========================================================
+LATEST USERS
+========================================================== -->
+
+<div class="table-card">
+
+    <h2 class="table-title">
+        Latest Registered Users
+    </h2>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Name</th>
+
+                <th>Email</th>
+
+                <th>Phone</th>
+
+                <th>Next Injection</th>
+
+                <th>Status</th>
+
+                <th>Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for user in latest_users %}
+
+            <tr>
+
+                <td>{{ user.full_name }}</td>
+
+                <td>{{ user.email }}</td>
+
+                <td>{{ user.phone }}</td>
+
+                <td>
+
+                    {% if user.reminder %}
+
+                        {{ user.reminder.next_injection_date.strftime("%d %b %Y") }}
+
+                    {% else %}
+
+                        Not Set
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {% if user.reminder %}
+
+                        {% if user.reminder.next_injection_date < today %}
+
+                            <span class="badge badge-danger">
+                                Missed
+                            </span>
+
+                        {% elif user.reminder.next_injection_date == today %}
+
+                            <span class="badge badge-warning">
+                                Due Today
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge badge-success">
+                                Active
+                            </span>
+
+                        {% endif %}
+
+                    {% else %}
+
+                        <span class="badge badge-info">
+                            New User
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    <a
+                        href="{{ url_for('admin.view_user', user_id=user.id) }}"
+                        class="btn btn-primary">
+
+                        View
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<br>
+
+
+<!-- ==========================================================
+RECENT ACTIVITIES
+========================================================== -->
+
+<div class="table-card">
+
+    <h2 class="table-title">
+
+        Recent Activities
+
+    </h2>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>User</th>
+
+                <th>Activity</th>
+
+                <th>Date</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for activity in recent_activities %}
+
+            <tr>
+
+                <td>
+
+                    {{ activity.user.full_name }}
+
+                </td>
+
+                <td>
+
+                    {{ activity.activity }}
+
+                </td>
+
+                <td>
+
+                    {{ activity.created_at.strftime("%d %b %Y %I:%M %p") }}
+
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

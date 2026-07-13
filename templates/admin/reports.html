@@ -1,0 +1,474 @@
+{% extends "admin/base.html" %}
+
+{% block title %}
+Reports & Analytics
+{% endblock %}
+
+{% block page_title %}
+Reports & Analytics
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/reports.css') }}">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<!-- ===================================== -->
+<!-- PAGE HEADER -->
+<!-- ===================================== -->
+
+<section class="report-header">
+
+    <div>
+
+        <h1>Reports Dashboard</h1>
+
+        <p>
+            Monitor users, reminders, chatbot usage and system activities.
+        </p>
+
+    </div>
+
+    <div class="report-actions">
+
+        <button
+            class="btn btn-outline"
+            id="printReport">
+
+            <i class="fas fa-print"></i>
+
+            Print
+
+        </button>
+
+        <a href="{{ url_for('admin.export_csv') }}"
+           class="btn btn-success">
+
+            <i class="fas fa-file-csv"></i>
+
+            Export CSV
+
+        </a>
+
+        <a href="{{ url_for('admin.export_pdf') }}"
+           class="btn btn-primary">
+
+            <i class="fas fa-file-pdf"></i>
+
+            Export PDF
+
+        </a>
+
+    </div>
+
+</section>
+
+<!-- ===================================== -->
+<!-- FILTERS -->
+<!-- ===================================== -->
+
+<section class="filter-section">
+
+    <div class="card">
+
+        <form class="filter-grid">
+
+            <div class="input-group">
+
+                <label>Report Type</label>
+
+                <select>
+
+                    <option>All Reports</option>
+
+                    <option>Users</option>
+
+                    <option>Reminders</option>
+
+                    <option>Chatbot</option>
+
+                    <option>Activities</option>
+
+                </select>
+
+            </div>
+
+            <div class="input-group">
+
+                <label>From Date</label>
+
+                <input type="date">
+
+            </div>
+
+            <div class="input-group">
+
+                <label>To Date</label>
+
+                <input type="date">
+
+            </div>
+
+            <div class="input-group">
+
+                <label>&nbsp;</label>
+
+                <button
+                    type="button"
+                    class="btn btn-primary">
+
+                    Generate Report
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
+
+<!-- ===================================== -->
+<!-- SUMMARY -->
+<!-- ===================================== -->
+
+<section class="summary-section">
+
+    <div class="grid grid-4">
+
+        <div class="summary-card">
+
+            <i class="fas fa-users"></i>
+
+            <h2>{{ total_users }}</h2>
+
+            <span>Total Users</span>
+
+        </div>
+
+        <div class="summary-card">
+
+            <i class="fas fa-comments"></i>
+
+            <h2>{{ total_chats }}</h2>
+
+            <span>AI Conversations</span>
+
+        </div>
+
+        <div class="summary-card">
+
+            <i class="fas fa-bell"></i>
+
+            <h2>{{ active_reminders }}</h2>
+
+            <span>Active Reminders</span>
+
+        </div>
+
+        <div class="summary-card danger">
+
+            <i class="fas fa-exclamation-circle"></i>
+
+            <h2>{{ missed_doses }}</h2>
+
+            <span>Missed Doses</span>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ===================================== -->
+<!-- CHARTS -->
+<!-- ===================================== -->
+
+<section class="charts-section">
+
+    <div class="grid grid-2">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <h3>User Registration</h3>
+
+            </div>
+
+            <canvas id="usersChart"></canvas>
+
+        </div>
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <h3>Reminder Status</h3>
+
+            </div>
+
+            <canvas id="reminderChart"></canvas>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section class="charts-section">
+
+    <div class="grid grid-2">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <h3>AI Usage</h3>
+
+            </div>
+
+            <canvas id="chatChart"></canvas>
+
+        </div>
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <h3>Injection Compliance</h3>
+
+            </div>
+
+            <canvas id="complianceChart"></canvas>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ===================================== -->
+<!-- SYSTEM PERFORMANCE -->
+<!-- ===================================== -->
+
+<section class="performance-section">
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <h3>System Overview</h3>
+
+        </div>
+
+        <div class="performance-grid">
+
+            <div class="performance-box">
+
+                <h4>Completed Injections</h4>
+
+                <h2>{{ completed_injections }}</h2>
+
+            </div>
+
+            <div class="performance-box">
+
+                <h4>Due Today</h4>
+
+                <h2>{{ due_today }}</h2>
+
+            </div>
+
+            <div class="performance-box">
+
+                <h4>Due Within 7 Days</h4>
+
+                <h2>{{ due_soon }}</h2>
+
+            </div>
+
+            <div class="performance-box">
+
+                <h4>Missed Doses</h4>
+
+                <h2>{{ missed_doses }}</h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ===================================== -->
+<!-- REPORT TABLE -->
+<!-- ===================================== -->
+
+<section class="table-section">
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <h3>Recent System Activities</h3>
+
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="report-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>User</th>
+
+                        <th>Activity</th>
+
+                        <th>Date</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% if recent_activities %}
+
+                    {% for activity in recent_activities %}
+
+                    <tr>
+
+                        <td>
+
+                            {{ activity.user.full_name }}
+
+                        </td>
+
+                        <td>
+
+                            {{ activity.activity }}
+
+                        </td>
+
+                        <td>
+
+                            {{ activity.created_at.strftime("%d %b %Y %I:%M %p") }}
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <tr>
+
+                        <td colspan="3">
+
+                            No activity available.
+
+                        </td>
+
+                    </tr>
+
+                {% endif %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ===================================== -->
+<!-- QUICK REPORTS -->
+<!-- ===================================== -->
+
+<section class="quick-reports">
+
+    <div class="grid grid-4">
+
+        <div class="quick-report-card">
+
+            <i class="fas fa-user-plus"></i>
+
+            <h4>New Users</h4>
+
+            <p>View new registrations.</p>
+
+        </div>
+
+        <div class="quick-report-card">
+
+            <i class="fas fa-calendar-check"></i>
+
+            <h4>Injection History</h4>
+
+            <p>Monitor completed injections.</p>
+
+        </div>
+
+        <div class="quick-report-card">
+
+            <i class="fas fa-robot"></i>
+
+            <h4>AI Statistics</h4>
+
+            <p>Analyze chatbot performance.</p>
+
+        </div>
+
+        <div class="quick-report-card">
+
+            <i class="fas fa-chart-line"></i>
+
+            <h4>Growth Trends</h4>
+
+            <p>Track monthly system growth.</p>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+
+const chartData = {
+
+    months: {{ months|tojson }},
+
+    users: {{ monthly_users|tojson }},
+
+    chats: {{ monthly_chats|tojson }},
+
+    completed: {{ completed }},
+
+    upcoming: {{ upcoming }},
+
+    missed: {{ missed }}
+
+};
+
+</script>
+
+<script src="{{ url_for('static', filename='js/reports.js') }}"></script>
+
+{% endblock %}

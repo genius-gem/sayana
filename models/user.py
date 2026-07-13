@@ -28,19 +28,16 @@ class User(db.Model):
     )
 
     phone = db.Column(
-        db.String(20)
+        db.String(20),
+        default=""
     )
 
     location = db.Column(
-        db.String(150)
+        db.String(150),
+        default=""
     )
 
     whatsapp_enabled = db.Column(
-        db.Boolean,
-        default=True
-    )
-
-    sms_enabled = db.Column(
         db.Boolean,
         default=True
     )
@@ -50,7 +47,52 @@ class User(db.Model):
         default=False
     )
 
+    is_admin = db.Column(
+        db.Boolean,
+        default=False
+    )
+
     created_at = db.Column(
         db.DateTime,
         server_default=func.now()
     )
+
+    is_active = db.Column(
+    db.Boolean,
+    default=True
+    )
+
+    # ----------------------------------
+    # Relationships
+    # ----------------------------------
+
+    reminders = db.relationship(
+        "Reminder",
+        backref="user",
+        lazy=True,
+        cascade="all, delete-orphan"
+    )
+
+    activities = db.relationship(
+        "Activity",
+        backref="user",
+        lazy=True,
+        cascade="all, delete-orphan"
+    )
+
+    chat_history = db.relationship(
+        "ChatHistory",
+        backref="user",
+        lazy=True,
+        cascade="all, delete-orphan"
+    )
+
+    injection_history = db.relationship(
+        "InjectionHistory",
+        backref="user",
+        lazy=True,
+        cascade="all, delete-orphan"
+    )
+
+    def __repr__(self):
+        return f"<User {self.email}>"

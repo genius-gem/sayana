@@ -1,0 +1,355 @@
+{% extends "admin/base.html" %}
+
+{% block title %}
+Reminder Management
+{% endblock %}
+
+{% block page_title %}
+Reminder Management
+{% endblock %}
+
+{% block content %}
+
+<!-- ====================================================== -->
+<!-- PAGE HEADER -->
+<!-- ====================================================== -->
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Reminder Management</h2>
+
+        <p>
+            Monitor all injection reminders and identify users who require follow-up.
+        </p>
+
+    </div>
+
+</div>
+
+
+<!-- ====================================================== -->
+<!-- SUMMARY CARDS -->
+<!-- ====================================================== -->
+
+<div class="grid grid-4">
+
+    {% set due_today = namespace(count=0) %}
+    {% set due_soon = namespace(count=0) %}
+    {% set missed = namespace(count=0) %}
+    {% set completed = namespace(count=0) %}
+
+    {% for reminder in reminders %}
+
+        {% if reminder.status() == "Due Today" %}
+            {% set due_today.count = due_today.count + 1 %}
+        {% elif reminder.status() == "Upcoming" %}
+            {% set due_soon.count = due_soon.count + 1 %}
+        {% elif reminder.status() == "Missed" %}
+            {% set missed.count = missed.count + 1 %}
+        {% endif %}
+
+        {% if reminder.last_injection_date %}
+            {% set completed.count = completed.count + 1 %}
+        {% endif %}
+
+    {% endfor %}
+
+    <div class="card stat-card">
+
+        <i class="fas fa-calendar-day fa-2x"></i>
+
+        <h2>{{ due_today.count }}</h2>
+
+        <p>Due Today</p>
+
+    </div>
+
+    <div class="card stat-card">
+
+        <i class="fas fa-clock fa-2x"></i>
+
+        <h2>{{ due_soon.count }}</h2>
+
+        <p>Due Soon</p>
+
+    </div>
+
+    <div class="card stat-card">
+
+        <i class="fas fa-exclamation-circle fa-2x"></i>
+
+        <h2>{{ missed.count }}</h2>
+
+        <p>Missed Dose</p>
+
+    </div>
+
+    <div class="card stat-card">
+
+        <i class="fas fa-check-circle fa-2x"></i>
+
+        <h2>{{ completed.count }}</h2>
+
+        <p>Completed Injection</p>
+
+    </div>
+
+</div>
+
+<br>
+
+
+<!-- ====================================================== -->
+<!-- REMINDER TABLE -->
+<!-- ====================================================== -->
+
+<div class="card">
+
+    <div class="table-header">
+
+        <h3>All Reminder Records</h3>
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search user..."
+        >
+
+    </div>
+
+    <br>
+
+    <table
+        class="table"
+        id="reminderTable"
+    >
+
+        <thead>
+
+            <tr>
+
+                <th>User</th>
+
+                <th>Last Injection</th>
+
+                <th>Next Injection</th>
+
+                <th>Days Left</th>
+
+                <th>Status</th>
+
+                <th>WhatsApp</th>
+
+                <th>Email</th>
+
+                <th>Actions</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for reminder in reminders %}
+
+            <tr>
+
+                <td>
+
+                    {{ reminder.user.full_name }}
+
+                    <br>
+
+                    <small>
+
+                        {{ reminder.user.email }}
+
+                    </small>
+
+                </td>
+
+                <td>
+
+                    {% if reminder.last_injection_date %}
+
+                        {{ reminder.last_injection_date.strftime("%d %b %Y") }}
+
+                    {% else %}
+
+                        -
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {{ reminder.next_injection_date.strftime("%d %b %Y") }}
+
+                </td>
+
+                <td>
+
+                    {% set days = (reminder.next_injection_date - today).days %}
+
+                    {% if days >= 0 %}
+
+                        {{ days }}
+
+                    {% else %}
+
+                        {{ days|abs }} Overdue
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {% if reminder.status() == "Missed" %}
+
+                        <span class="badge danger">
+
+                            Missed Dose
+
+                        </span>
+
+                    {% elif reminder.status() == "Due Today" %}
+
+                        <span class="badge warning">
+
+                            Due Today
+
+                        </span>
+
+                    {% elif reminder.status() == "Upcoming" %}
+
+                        <span class="badge success">
+
+                            Upcoming
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge primary">
+
+                            {{ reminder.status() }}
+
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {% if reminder.whatsapp_enabled %}
+
+                        <span class="badge success">
+
+                            Enabled
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge danger">
+
+                            Disabled
+
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {% if reminder.email_enabled %}
+
+                        <span class="badge success">
+
+                            Enabled
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge danger">
+
+                            Disabled
+
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    <a
+                        href="{{ url_for('admin.view_user', user_id=reminder.user.id) }}"
+                        class="btn btn-sm btn-primary">
+
+                        View
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script>
+
+const searchInput =
+document.getElementById("searchInput");
+
+searchInput.addEventListener(
+
+    "keyup",
+
+    function(){
+
+        const filter =
+        this.value.toLowerCase();
+
+        const rows =
+        document.querySelectorAll(
+            "#reminderTable tbody tr"
+        );
+
+        rows.forEach(function(row){
+
+            const text =
+            row.innerText.toLowerCase();
+
+            row.style.display =
+            text.includes(filter)
+            ? ""
+            : "none";
+
+        });
+
+    }
+
+);
+
+</script>
+
+{% endblock %}

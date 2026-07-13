@@ -1,0 +1,175 @@
+{% extends "admin/base.html" %}
+
+{% block title %}
+Injection History
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h2>Injection History</h2>
+
+        <p>
+            View all recorded injections.
+        </p>
+
+    </div>
+
+</div>
+
+<div class="table-card">
+
+<table class="admin-table">
+
+<thead>
+
+<tr>
+
+    <th>#</th>
+
+    <th>User</th>
+
+    <th>Date</th>
+
+    <th>Next Dose</th>
+
+    <th>Site</th>
+
+    <th>Status</th>
+
+    <th>Administered By</th>
+
+    <th>Actions</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for injection in injections.items %}
+
+<tr>
+
+<td>
+
+{{ injection.injection_number }}
+
+</td>
+
+<td>
+
+{{ injection.user.full_name }}
+
+</td>
+
+<td>
+
+{{ injection.injection_date.strftime("%d %b %Y") }}
+
+</td>
+
+<td>
+
+{{ injection.next_injection_date.strftime("%d %b %Y") }}
+
+</td>
+
+<td>
+
+{{ injection.injection_site }}
+
+</td>
+
+<td>
+
+{% if injection.status=="Completed" %}
+
+<span class="badge success">
+
+Completed
+
+</span>
+
+{% elif injection.status=="Upcoming" %}
+
+<span class="badge warning">
+
+Upcoming
+
+</span>
+
+{% else %}
+
+<span class="badge danger">
+
+Missed
+
+</span>
+
+{% endif %}
+
+</td>
+
+<td>
+
+{{ injection.administered_by }}
+
+</td>
+
+<td>
+
+<a
+href="{{ url_for('admin.user_injections',user_id=injection.user.id) }}"
+class="btn btn-info">
+
+View User
+
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="pagination">
+
+{% if injections.has_prev %}
+
+<a href="{{ url_for('admin.injections',page=injections.prev_num) }}">
+
+Previous
+
+</a>
+
+{% endif %}
+
+<span>
+
+Page {{ injections.page }} of {{ injections.pages }}
+
+</span>
+
+{% if injections.has_next %}
+
+<a href="{{ url_for('admin.injections',page=injections.next_num) }}">
+
+Next
+
+</a>
+
+{% endif %}
+
+</div>
+
+{% endblock %}

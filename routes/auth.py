@@ -4,7 +4,8 @@ from flask import (
     request,
     redirect,
     url_for,
-    flash
+    flash,
+    session
 )
 
 from werkzeug.security import (
@@ -12,8 +13,8 @@ from werkzeug.security import (
     check_password_hash
 )
 
-from models.user import User
 from config.database import db
+from models.user import User
 
 
 auth_bp = Blueprint(
@@ -22,40 +23,62 @@ auth_bp = Blueprint(
 )
 
 
-# ==========================
+# ==========================================================
 # LOGIN
-# ==========================
+# ==========================================================
 
-@auth_bp.route(
-    "/",
-    methods=["GET", "POST"]
-)
+@auth_bp.route("/", methods=["GET", "POST"])
 def login():
 
     if request.method == "POST":
 
         email = request.form.get(
-            "email"
-        )
+            "email",
+            ""
+        ).strip().lower()
 
         password = request.form.get(
-            "password"
+            "password",
+            ""
         )
 
-        user = User.query.filter_by(
-            email=email
-        ).first()
+        # -----------------------------
+        # Validate
+        # -----------------------------
 
-        if not user:
+        if not email or not password:
 
             flash(
-                "Account not found.",
+                "Please enter your email and password.",
                 "danger"
             )
 
             return redirect(
                 url_for("auth.login")
             )
+
+        # -----------------------------
+        # Find User
+        # -----------------------------
+
+        user = User.query.filter_by(
+            email=email
+        ).first()
+
+        if user is None:
+
+            flash(
+                "No account was found with that email address.",
+                "danger"
+            )
+
+            return redirect(
+                url_for("auth.login")
+            )
+
+        # -----------------------------
+        # Verify Password
+        # -----------------------------
 
         if not check_password_hash(
             user.password,
@@ -63,7 +86,7 @@ def login():
         ):
 
             flash(
-                "Invalid password.",
+                "Incorrect password.",
                 "danger"
             )
 
@@ -71,8 +94,18 @@ def login():
                 url_for("auth.login")
             )
 
+        # -----------------------------
+        # Create Session
+        # -----------------------------
+
+        session.clear()
+
+        session["user_id"] = user.id
+        session["user_name"] = user.full_name
+        session["user_email"] = user.email
+
         flash(
-            "Login successful.",
+            f"Welcome back, {user.full_name}!",
             "success"
         )
 
@@ -85,40 +118,48 @@ def login():
     )
 
 
-# ==========================
+# ==========================================================
 # REGISTER
-# ==========================
+# ==========================================================
 
-@auth_bp.route(
-    "/register",
-    methods=["GET", "POST"]
-)
+@auth_bp.route("/register", methods=["GET", "POST"])
 def register():
 
     if request.method == "POST":
 
         full_name = request.form.get(
-            "full_name"
-        )
+            "full_name",
+            ""
+        ).strip()
 
         email = request.form.get(
-            "email"
-        )
+            "email",
+            ""
+        ).strip().lower()
 
         password = request.form.get(
-            "password"
+            "password",
+            ""
         )
 
-        existing_user = (
-            User.query.filter_by(
-                email=email
-            ).first()
-        )
+        phone = request.form.get(
+            "phone",
+            ""
+        ).strip()
 
-        if existing_user:
+        location = request.form.get(
+            "location",
+            ""
+        ).strip()
+
+        # -----------------------------
+        # Validate Required Fields
+        # -----------------------------
+
+        if not full_name or not email or not password:
 
             flash(
-                "Email already exists.",
+                "Please complete all required fields.",
                 "danger"
             )
 
@@ -126,28 +167,51 @@ def register():
                 url_for("auth.register")
             )
 
-        hashed_password = (
-            generate_password_hash(
-                password
+        # -----------------------------
+        # Check Existing Email
+        # -----------------------------
+
+        existing_user = User.query.filter_by(
+            email=email
+        ).first()
+
+        if existing_user:
+
+            flash(
+                "An account with this email already exists.",
+                "danger"
             )
-        )
 
-        user = User(
+            return redirect(
+                url_for("auth.register")
+            )
 
-            full_name=full_name,
+        # -----------------------------
+        # Create User
+        # -----------------------------
 
-            email=email,
+        new_user = User(
 
-            password=hashed_password
+    full_name=full_name,
 
-        )
+    email=email,
 
-        db.session.add(user)
+    password=generate_password_hash(password),
 
+    phone=phone,
+
+    location=location,
+
+    whatsapp_enabled=True,
+
+    email_enabled=False
+)
+
+        db.session.add(new_user)
         db.session.commit()
 
         flash(
-            "Registration successful.",
+            "Registration successful. Please log in.",
             "success"
         )
 
@@ -160,15 +224,17 @@ def register():
     )
 
 
-# ==========================
+# ==========================================================
 # LOGOUT
-# ==========================
+# ==========================================================
 
 @auth_bp.route("/logout")
 def logout():
 
+    session.clear()
+
     flash(
-        "Logged out successfully.",
+        "You have been logged out successfully.",
         "success"
     )
 

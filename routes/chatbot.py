@@ -1,8 +1,13 @@
 from flask import (
     Blueprint,
     request,
-    jsonify
+    jsonify,
+    session
 )
+
+from config.database import db
+
+from models.chat_history import ChatHistory
 
 from services.chatbot import get_response
 
@@ -12,6 +17,10 @@ chatbot_bp = Blueprint(
     __name__
 )
 
+
+# ==========================================================
+# CHATBOT API
+# ==========================================================
 
 @chatbot_bp.route(
     "/ask",
@@ -42,6 +51,28 @@ def ask():
 
         answer = get_response(question)
 
+        # ==========================================
+        # SAVE CHAT HISTORY
+        # ==========================================
+
+        user_id = session.get("user_id")
+
+        if user_id:
+
+            chat = ChatHistory(
+
+                user_id=user_id,
+
+                question=question,
+
+                answer=answer
+
+            )
+
+            db.session.add(chat)
+
+            db.session.commit()
+
         return jsonify({
             "answer": answer
         })
@@ -51,5 +82,8 @@ def ask():
         print(e)
 
         return jsonify({
-            "answer": "Sorry, something went wrong while processing your request."
+            "answer": (
+                "Sorry, something went wrong while "
+                "processing your request."
+            )
         }), 500

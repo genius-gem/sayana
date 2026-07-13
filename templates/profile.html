@@ -20,12 +20,12 @@ Profile & Reminders
     <div class="profile-info">
 
         <div class="profile-avatar">
-            SJ
+            {{ user.full_name[:2]|upper if user else "U" }}
         </div>
 
         <div>
 
-            <h1>Sarah Johnson</h1>
+            <h1>{{ user.full_name }}</h1>
 
             <p>
                 Stay informed. Stay protected.
@@ -51,7 +51,13 @@ Profile & Reminders
 
             <i class="fas fa-calendar-check"></i>
 
-            <h3>15 Jul 2026</h3>
+            <h3>
+                {% if reminder %}
+                    {{ reminder.next_injection_date.strftime("%d %b %Y") }}
+                {% else %}
+                    Not Set
+                {% endif %}
+            </h3>
 
             <span>Next Injection</span>
 
@@ -61,7 +67,13 @@ Profile & Reminders
 
             <i class="fas fa-bell"></i>
 
-            <h3>Active</h3>
+            <h3>
+                {% if reminder %}
+                    Active
+                {% else %}
+                    Inactive
+                {% endif %}
+            </h3>
 
             <span>Reminder Status</span>
 
@@ -71,7 +83,9 @@ Profile & Reminders
 
             <i class="fab fa-whatsapp"></i>
 
-            <h3>Enabled</h3>
+            <h3>
+                {{ "Enabled" if user.whatsapp_enabled else "Disabled" }}
+            </h3>
 
             <span>WhatsApp Alerts</span>
 
@@ -81,7 +95,7 @@ Profile & Reminders
 
             <i class="fas fa-chart-line"></i>
 
-            <h3>95%</h3>
+            <h3>100%</h3>
 
             <span>Adherence Rate</span>
 
@@ -91,13 +105,13 @@ Profile & Reminders
 
 </section>
 
-<!-- MAIN GRID -->
+<!-- PROFILE GRID -->
 
 <section class="profile-grid">
 
     <div class="grid grid-2">
 
-        <!-- PERSONAL INFO -->
+        <!-- PERSONAL INFORMATION -->
 
         <div class="card">
 
@@ -105,27 +119,64 @@ Profile & Reminders
                 <h2>Personal Information</h2>
             </div>
 
-            <form>
+            <form method="POST"
+                  action="{{ url_for('update_profile') }}">
 
                 <div class="input-group">
+
                     <label>Full Name</label>
-                    <input type="text" value="Sarah Johnson">
+
+                    <input
+                        type="text"
+                        name="full_name"
+                        value="{{ user.full_name }}"
+                    >
+
                 </div>
 
                 <div class="input-group">
+
                     <label>Email Address</label>
-                    <input type="email" value="sarah@email.com">
+
+                    <input
+                        type="email"
+                        value="{{ user.email }}"
+                        readonly
+                    >
+
                 </div>
 
                 <div class="input-group">
+
                     <label>Phone Number</label>
-                    <input type="text" value="+2348012345678">
+
+                    <input
+                        type="text"
+                        name="phone"
+                        value="{{ user.phone }}"
+                    >
+
                 </div>
 
                 <div class="input-group">
+
                     <label>Location</label>
-                    <input type="text" value="Ibadan, Nigeria">
+
+                    <input
+                        type="text"
+                        name="location"
+                        value="{{ user.location }}"
+                    >
+
                 </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+
+                    Save Changes
+
+                </button>
 
             </form>
 
@@ -142,18 +193,51 @@ Profile & Reminders
             <div class="schedule-box">
 
                 <div class="schedule-item">
+
                     <span>Last Injection</span>
-                    <strong>15 April 2026</strong>
+
+                    <strong>
+
+                        {% if reminder and reminder.last_injection_date %}
+                            {{ reminder.last_injection_date.strftime("%d %B %Y") }}
+                        {% else %}
+                            Not Available
+                        {% endif %}
+
+                    </strong>
+
                 </div>
 
                 <div class="schedule-item">
+
                     <span>Next Injection</span>
-                    <strong>15 July 2026</strong>
+
+                    <strong>
+
+                        {% if reminder %}
+                            {{ reminder.next_injection_date.strftime("%d %B %Y") }}
+                        {% else %}
+                            Not Set
+                        {% endif %}
+
+                    </strong>
+
                 </div>
 
                 <div class="schedule-item">
+
                     <span>Days Remaining</span>
-                    <strong>24 Days</strong>
+
+                    <strong>
+
+                        {% if reminder %}
+                            {{ days_remaining }} Days
+                        {% else %}
+                            --
+                        {% endif %}
+
+                    </strong>
+
                 </div>
 
             </div>
@@ -179,39 +263,41 @@ Profile & Reminders
             <label class="switch-card">
 
                 <div>
+
                     <h4>WhatsApp Notifications</h4>
+
                     <p>
                         Receive reminder messages through WhatsApp.
                     </p>
+
                 </div>
 
-                <input type="checkbox" checked>
+                <input
+                    type="checkbox"
+                    {% if user.whatsapp_enabled %}checked{% endif %}
+                    disabled
+                >
 
             </label>
+
 
             <label class="switch-card">
 
                 <div>
-                    <h4>SMS Notifications</h4>
-                    <p>
-                        Receive reminder messages via SMS.
-                    </p>
-                </div>
 
-                <input type="checkbox" checked>
-
-            </label>
-
-            <label class="switch-card">
-
-                <div>
                     <h4>Email Notifications</h4>
+
                     <p>
                         Receive reminder emails.
                     </p>
+
                 </div>
 
-                <input type="checkbox">
+                <input
+                    type="checkbox"
+                    {% if user.email_enabled %}checked{% endif %}
+                    disabled
+                >
 
             </label>
 
@@ -221,7 +307,7 @@ Profile & Reminders
 
 </section>
 
-<!-- NOTIFICATION TIMELINE -->
+<!-- REMINDER TIMELINE -->
 
 <section class="timeline-section">
 
@@ -239,26 +325,16 @@ Profile & Reminders
 
                 <div class="timeline-content">
 
-                    <h4>Reminder Scheduled</h4>
+                    <h4>Reminder Created</h4>
 
                     <p>
-                        8 July 2026
-                    </p>
 
-                </div>
+                        {% if reminder %}
+                            {{ reminder.created_at.strftime("%d %B %Y") }}
+                        {% else %}
+                            --
+                        {% endif %}
 
-            </div>
-
-            <div class="timeline-item">
-
-                <div class="timeline-dot"></div>
-
-                <div class="timeline-content">
-
-                    <h4>Reminder Sent</h4>
-
-                    <p>
-                        12 July 2026
                     </p>
 
                 </div>
@@ -271,10 +347,16 @@ Profile & Reminders
 
                 <div class="timeline-content">
 
-                    <h4>Injection Due</h4>
+                    <h4>Next Injection</h4>
 
                     <p>
-                        15 July 2026
+
+                        {% if reminder %}
+                            {{ reminder.next_injection_date.strftime("%d %B %Y") }}
+                        {% else %}
+                            --
+                        {% endif %}
+
                     </p>
 
                 </div>

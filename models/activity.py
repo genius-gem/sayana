@@ -13,6 +13,7 @@ class Activity(db.Model):
 
     user_id = db.Column(
         db.Integer,
+        db.ForeignKey("users.id"),
         nullable=False
     )
 
@@ -25,3 +26,6 @@ class Activity(db.Model):
         db.DateTime,
         server_default=func.now()
     )
+
+    def __repr__(self):
+        return f"<Activity {self.activity}>"

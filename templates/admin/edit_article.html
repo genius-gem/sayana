@@ -1,0 +1,115 @@
+{% extends "admin/base.html" %}
+
+{% block title %}
+Edit Knowledge
+{% endblock %}
+
+{% block page_title %}
+Edit Knowledge Article
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+    <h2>Edit Knowledge Article</h2>
+
+    <br>
+
+    <form method="POST">
+
+        <div class="input-group">
+
+            <label>Title</label>
+
+            <input
+                type="text"
+                name="title"
+                value="{{ article.title }}"
+                required
+            >
+
+        </div>
+
+        <div class="input-group">
+
+            <label>Category</label>
+
+            <input
+                type="text"
+                name="category"
+                value="{{ article.category }}"
+                required
+            >
+
+        </div>
+
+        <div class="input-group">
+
+            <label>Keywords</label>
+
+            <input
+                type="text"
+                name="keywords"
+                value="{{ article.keywords or '' }}"
+            >
+
+        </div>
+
+        <div class="input-group">
+
+            <label>Content</label>
+
+            <textarea
+                name="content"
+                rows="15"
+                required>{{ article.content }}</textarea>
+
+        </div>
+
+        <div
+            style="
+            display:flex;
+            gap:10px;
+            align-items:center;
+            margin-bottom:25px;
+            ">
+
+            <input
+                type="checkbox"
+                name="is_active"
+
+                {% if article.is_active %}
+                checked
+                {% endif %}
+            >
+
+            <label>
+
+                Active Article
+
+            </label>
+
+        </div>
+
+        <button
+            class="btn btn-primary"
+            type="submit">
+
+            Save Changes
+
+        </button>
+
+        <a
+            href="{{ url_for('admin.knowledge') }}"
+            class="btn btn-outline">
+
+            Cancel
+
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

@@ -31,22 +31,26 @@
 
         <nav class="sidebar-nav">
 
-            <a href="{{ url_for('dashboard') }}" class="nav-link">
+            <a href="{{ url_for('dashboard') }}"
+   class="nav-link {% if request.endpoint == 'dashboard' or request.path == '/dashboard' %}active{% endif %}">
                 <i class="fas fa-home"></i>
                 <span>Dashboard</span>
             </a>
 
-            <a href="{{ url_for('chat') }}" class="nav-link">
+            <a href="{{ url_for('chat') }}"
+   class="nav-link {% if request.endpoint == 'chat' or request.path == '/chat' %}active{% endif %}">
                 <i class="fas fa-robot"></i>
                 <span>AI Assistant</span>
             </a>
 
-            <a href="{{ url_for('resources') }}" class="nav-link">
+            <a href="{{ url_for('resources') }}"
+   class="nav-link {% if request.endpoint == 'resources' or request.path == '/resources' %}active{% endif %}">
                 <i class="fas fa-book-open"></i>
                 <span>Learn Hub</span>
             </a>
 
-            <a href="{{ url_for('profile') }}" class="nav-link">
+            <a href="{{ url_for('profile') }}"
+   class="nav-link {% if request.endpoint == 'profile' or request.path == '/profile' %}active{% endif %}">
                 <i class="fas fa-bell"></i>
                 <span>Profile & Reminders</span>
             </a>
@@ -54,7 +58,7 @@
         </nav>
 
         <div class="sidebar-footer">
-            <a href="#" class="logout-btn">
+            <a href="{{ url_for('auth.logout') }}" class="logout-btn">
                 <i class="fas fa-sign-out-alt"></i>
                 Logout
             </a>
@@ -84,13 +88,27 @@
                     <i class="fas fa-bell"></i>
                 </div>
 
-                <img src="{{ url_for('static', filename='images/user.png') }}"
-                     alt="User"
-                     class="profile-pic">
+                <img
+                    src="{{ url_for('static', filename='images/user.png') }}"
+                    alt="User"
+                    class="profile-pic"
+                    onerror="this.src='https://placehold.co/60x60'"
+                >
 
                 <div class="user-info">
-                    <h4>Sarah</h4>
-                    <small>User</small>
+                    <h4>
+    {% if session.get("user_name") %}
+        {{ session.get("user_name") }}
+    {% else %}
+        User
+    {% endif %}
+</h4>
+
+<small>
+    {% if session.get("user_email") %}
+        {{ session.get("user_email") }}
+    {% endif %}
+</small>
                 </div>
 
             </div>
@@ -98,10 +116,27 @@
         </header>
 
         <!-- PAGE CONTENT -->
+         
         <main class="content-area">
 
-            {% block content %}
-            {% endblock %}
+            <main class="content-area">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}
+    {% endblock %}
+
+</main>
 
         </main>
 

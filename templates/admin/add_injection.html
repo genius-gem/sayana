@@ -1,0 +1,168 @@
+{% extends "admin/base.html" %}
+
+{% block title %}
+Add Injection
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+<div>
+
+<h2>
+
+Record Injection
+
+</h2>
+
+<p>
+
+{{ user.full_name }}
+
+</p>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<form
+method="POST"
+action="{{ url_for('admin.save_injection',user_id=user.id) }}">
+
+<div class="grid grid-2">
+
+<div class="input-group">
+
+<label>
+
+Injection Date
+
+</label>
+
+<input
+type="date"
+name="injection_date"
+required>
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Injection Site
+
+</label>
+
+<select
+name="injection_site"
+required>
+
+<option value="Left Arm">Left Arm</option>
+
+<option value="Right Arm">Right Arm</option>
+
+<option value="Left Thigh">Left Thigh</option>
+
+<option value="Right Thigh">Right Thigh</option>
+
+<option value="Abdomen">Abdomen</option>
+
+</select>
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Administered By
+
+</label>
+
+<input
+type="text"
+name="administered_by"
+value="Self">
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Status
+
+</label>
+
+<select
+name="status">
+
+<option value="Completed">
+
+Completed
+
+</option>
+
+<option value="Upcoming">
+
+Upcoming
+
+</option>
+
+<option value="Missed">
+
+Missed
+
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Notes
+
+</label>
+
+<textarea
+name="notes"
+rows="5"></textarea>
+
+</div>
+
+<div class="form-actions">
+
+<button
+class="btn btn-primary"
+type="submit">
+
+<i class="fas fa-save"></i>
+
+Save Injection
+
+</button>
+
+<a
+href="{{ url_for('admin.user_injections',user_id=user.id) }}"
+class="btn btn-outline">
+
+Cancel
+
+</a>
+
+</div>
+
+</form>
+
+</div>
+
+{% endblock %}

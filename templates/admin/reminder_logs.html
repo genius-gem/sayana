@@ -1,0 +1,336 @@
+{% extends "admin/base.html" %}
+
+{% block title %}
+Reminder Logs
+{% endblock %}
+
+{% block content %}
+
+<!-- ========================================= -->
+<!-- PAGE HEADER -->
+<!-- ========================================= -->
+
+<div class="page-header">
+
+    <h1>Reminder Logs</h1>
+
+    <p>
+        Monitor all reminder notifications sent to users.
+    </p>
+
+</div>
+
+
+<!-- ========================================= -->
+<!-- STATISTICS -->
+<!-- ========================================= -->
+
+<div class="stats-grid">
+
+    <div class="stat-box">
+        <h2>{{ total }}</h2>
+        <p>Total Logs</p>
+    </div>
+
+    <div class="stat-box">
+        <h2>{{ sent }}</h2>
+        <p>Sent</p>
+    </div>
+
+    <div class="stat-box">
+        <h2>{{ pending }}</h2>
+        <p>Pending</p>
+    </div>
+
+    <div class="stat-box">
+        <h2>{{ failed }}</h2>
+        <p>Failed</p>
+    </div>
+
+</div>
+
+
+<!-- ========================================= -->
+<!-- SEARCH & FILTER -->
+<!-- ========================================= -->
+
+<form
+    method="GET"
+    class="filter-form"
+>
+
+    <input
+        type="text"
+        name="search"
+        placeholder="Search user..."
+        value="{{ request.args.get('search', '') }}"
+    >
+
+    <select name="status">
+
+        <option value="">All Status</option>
+
+        <option
+            value="Sent"
+            {% if request.args.get('status') == 'Sent' %}selected{% endif %}
+        >
+            Sent
+        </option>
+
+        <option
+            value="Pending"
+            {% if request.args.get('status') == 'Pending' %}selected{% endif %}
+        >
+            Pending
+        </option>
+
+        <option
+            value="Failed"
+            {% if request.args.get('status') == 'Failed' %}selected{% endif %}
+        >
+            Failed
+        </option>
+
+    </select>
+
+    <select name="channel">
+
+        <option value="">All Channels</option>
+
+        <option
+            value="Email"
+            {% if request.args.get('channel') == 'Email' %}selected{% endif %}
+        >
+            Email
+        </option>
+
+        <option
+            value="WhatsApp"
+            {% if request.args.get('channel') == 'WhatsApp' %}selected{% endif %}
+        >
+            WhatsApp
+        </option>
+
+    </select>
+
+    <button
+        type="submit"
+        class="btn btn-primary"
+    >
+        Search
+    </button>
+
+</form>
+
+
+<!-- ========================================= -->
+<!-- REMINDER LOG TABLE -->
+<!-- ========================================= -->
+
+<div class="table-card">
+
+    <table class="admin-table">
+
+        <thead>
+
+            <tr>
+
+                <th>User</th>
+
+                <th>Channel</th>
+
+                <th>Reminder Type</th>
+
+                <th>Status</th>
+
+                <th>Sent At</th>
+
+                <th>Action</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% if logs %}
+
+            {% for log in logs.items %}
+
+            <tr>
+
+                <td>
+
+                    {{ log.user.full_name }}
+
+                </td>
+
+                <td>
+
+                    {{ log.channel }}
+
+                </td>
+
+                <td>
+
+                    {{ log.reminder_type }}
+
+                </td>
+
+                <td>
+
+                    {% if log.status == "Sent" %}
+
+                        <span class="badge success">
+
+                            Sent
+
+                        </span>
+
+                    {% elif log.status == "Pending" %}
+
+                        <span class="badge warning">
+
+                            Pending
+
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge danger">
+
+                            Failed
+
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {% if log.sent_at %}
+
+                        {{ log.sent_at.strftime("%d %b %Y %I:%M %p") }}
+
+                    {% else %}
+
+                        --
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    <a
+                        href="{{ url_for('admin.resend_reminder', log_id=log.id) }}"
+                        class="btn btn-primary"
+                    >
+
+                        Resend
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        {% else %}
+
+            <tr>
+
+                <td
+                    colspan="6"
+                    style="text-align:center;padding:30px;"
+                >
+
+                    No reminder logs found.
+
+                </td>
+
+            </tr>
+
+        {% endif %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}
+
+<!-- ========================================= -->
+<!-- PAGINATION -->
+<!-- ========================================= -->
+
+<div class="pagination">
+
+    {% if logs.has_prev %}
+
+        <a
+
+        href="{{ url_for(
+
+            'admin.reminder_logs',
+
+            page=logs.prev_num,
+
+            search=request.args.get('search'),
+
+            status=request.args.get('status'),
+
+            channel=request.args.get('channel')
+
+        ) }}"
+
+        >
+
+            Previous
+
+        </a>
+
+    {% endif %}
+
+
+    <span>
+
+        Page {{ logs.page }}
+
+        of
+
+        {{ logs.pages }}
+
+    </span>
+
+
+    {% if logs.has_next %}
+
+        <a
+
+        href="{{ url_for(
+
+            'admin.reminder_logs',
+
+            page=logs.next_num,
+
+            search=request.args.get('search'),
+
+            status=request.args.get('status'),
+
+            channel=request.args.get('channel')
+
+        ) }}"
+
+        >
+
+            Next
+
+        </a>
+
+    {% endif %}
+
+</div>

@@ -13,80 +13,157 @@ Dashboard
 
 {% block content %}
 
+<!-- ========================================= -->
 <!-- HERO SECTION -->
+<!-- ========================================= -->
+
 <section class="hero-section">
 
     <div class="hero-content">
+
         <div>
-            <h1>Hello, Sarah 👋</h1>
+
+            <h1>
+                Hello, {{ user.full_name }} 👋
+            </h1>
+
             <p>
                 Welcome back to your Sayana Press Assistant.
                 Stay informed, stay protected, and never miss a dose.
             </p>
+
         </div>
 
         <div class="countdown-card">
+
             <span>Next Injection Due In</span>
-            <h2>24 Days</h2>
+
+            <h2>
+
+                {% if reminder %}
+                    {{ days_remaining }} Days
+                {% else %}
+                    No Reminder
+                {% endif %}
+
+            </h2>
+
         </div>
+
     </div>
 
 </section>
 
-<!-- STATS -->
+
+<!-- ========================================= -->
+<!-- STATISTICS -->
+<!-- ========================================= -->
+
 <section class="stats-section">
 
     <div class="grid grid-4">
 
+        <!-- Next Dose -->
         <div class="stat-card">
+
             <div class="stat-icon purple">
                 <i class="fas fa-calendar-alt"></i>
             </div>
 
             <div>
+
                 <h4>Next Dose</h4>
-                <p>15 July 2026</p>
+
+                <p>
+
+                    {% if reminder %}
+                        {{ reminder.next_injection_date.strftime("%d %B %Y") }}
+                    {% else %}
+                        Not Set
+                    {% endif %}
+
+                </p>
+
             </div>
+
         </div>
 
+        <!-- Reminder -->
         <div class="stat-card">
+
             <div class="stat-icon pink">
                 <i class="fas fa-bell"></i>
             </div>
 
             <div>
+
                 <h4>Reminder</h4>
-                <p>Active</p>
+
+                <p>
+
+                    {% if reminder %}
+                        Active
+                    {% else %}
+                        Not Set
+                    {% endif %}
+
+                </p>
+
             </div>
+
         </div>
 
+        <!-- Adherence -->
         <div class="stat-card">
+
             <div class="stat-icon green">
                 <i class="fas fa-chart-line"></i>
             </div>
 
             <div>
+
                 <h4>Adherence</h4>
-                <p>95%</p>
+
+                <p>
+
+                    {% if reminder %}
+                        100%
+                    {% else %}
+                        0%
+                    {% endif %}
+
+                </p>
+
             </div>
+
         </div>
 
+        <!-- AI Chats -->
         <div class="stat-card">
+
             <div class="stat-icon orange">
                 <i class="fas fa-robot"></i>
             </div>
 
             <div>
+
                 <h4>AI Chats</h4>
-                <p>12</p>
+
+                <p>{{ chat_count }}</p>
+
             </div>
+
         </div>
 
     </div>
 
 </section>
 
+
+<!-- ========================================= -->
 <!-- QUICK ACTIONS -->
+<!-- ========================================= -->
+
 <section class="quick-actions">
 
     <div class="section-header">
@@ -96,33 +173,56 @@ Dashboard
     <div class="grid grid-3">
 
         <a href="{{ url_for('chat') }}" class="action-card">
+
             <i class="fas fa-robot"></i>
+
             <h3>Start Chat</h3>
-            <p>Ask questions about Sayana Press.</p>
+
+            <p>
+                Ask questions about Sayana Press.
+            </p>
+
         </a>
 
         <a href="{{ url_for('resources') }}" class="action-card">
+
             <i class="fas fa-book-open"></i>
+
             <h3>Learn More</h3>
-            <p>Browse educational resources.</p>
+
+            <p>
+                Browse educational resources.
+            </p>
+
         </a>
 
         <a href="{{ url_for('profile') }}" class="action-card">
-            <i class="fas fa-bell"></i>
-            <h3>Manage Reminders</h3>
-            <p>Update notification settings.</p>
+
+            <i class="fas fa-user-circle"></i>
+
+            <h3>Profile</h3>
+
+            <p>
+                Update your personal information and reminders.
+            </p>
+
         </a>
 
     </div>
 
 </section>
 
-<!-- MAIN DASHBOARD GRID -->
+
+<!-- ========================================= -->
+<!-- MAIN DASHBOARD -->
+<!-- ========================================= -->
+
 <section class="dashboard-grid">
 
     <div class="grid grid-2">
 
         <!-- HEALTH TIP -->
+
         <div class="card health-tip">
 
             <div class="card-header">
@@ -131,13 +231,16 @@ Dashboard
 
             <p>
                 Sayana Press prevents pregnancy for up to
-                3 months when administered correctly.
-                Follow your injection schedule for maximum effectiveness.
+                three months when administered correctly.
+                Always receive your next injection on schedule
+                for maximum effectiveness.
             </p>
 
         </div>
 
+
         <!-- UPCOMING REMINDER -->
+
         <div class="card reminder-card">
 
             <div class="card-header">
@@ -146,16 +249,39 @@ Dashboard
 
             <div class="reminder-info">
 
-                <h2>15 July 2026</h2>
+                <h2>
+
+                    {% if reminder %}
+                        {{ reminder.next_injection_date.strftime("%d %B %Y") }}
+                    {% else %}
+                        No Reminder Scheduled
+                    {% endif %}
+
+                </h2>
 
                 <p>
-                    Your next injection is scheduled in
-                    <strong>24 days</strong>.
+
+                    {% if reminder %}
+
+                        Your next injection is scheduled in
+
+                        <strong>{{ days_remaining }} days</strong>.
+
+                    {% else %}
+
+                        You haven't created an injection reminder yet.
+
+                    {% endif %}
+
                 </p>
 
-                <button class="btn btn-primary">
-                    View Schedule
-                </button>
+                <a
+                    href="{{ url_for('profile') }}"
+                    class="btn btn-primary">
+
+                    Manage Reminder
+
+                </a>
 
             </div>
 
@@ -165,36 +291,64 @@ Dashboard
 
 </section>
 
+
+<!-- ========================================= -->
 <!-- RECENT ACTIVITY -->
+<!-- ========================================= -->
+
 <section class="activity-section">
 
     <div class="card">
 
         <div class="card-header">
+
             <h3>Recent Activity</h3>
+
         </div>
 
         <ul class="activity-list">
 
-            <li>
-                <i class="fas fa-check-circle success"></i>
-                Reminder activated successfully
-            </li>
+            {% if activities %}
 
-            <li>
-                <i class="fas fa-robot purple-text"></i>
-                Asked AI Assistant about side effects
-            </li>
+                {% for activity in activities %}
 
-            <li>
-                <i class="fas fa-book pink-text"></i>
-                Viewed self-injection guide
-            </li>
+                <li>
 
-            <li>
-                <i class="fas fa-calendar-check success"></i>
-                Injection schedule updated
-            </li>
+                    <i class="fas fa-history purple-text"></i>
+
+                    <div>
+
+                        <strong>
+
+                            {{ activity.activity }}
+
+                        </strong>
+
+                        <br>
+
+                        <small>
+
+                            {{ activity.created_at.strftime("%d %b %Y %I:%M %p") }}
+
+                        </small>
+
+                    </div>
+
+                </li>
+
+                {% endfor %}
+
+            {% else %}
+
+                <li>
+
+                    <i class="fas fa-info-circle"></i>
+
+                    No recent activity found.
+
+                </li>
+
+            {% endif %}
 
         </ul>
 

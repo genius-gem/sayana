@@ -1,4 +1,5 @@
 from config.database import db
+from sqlalchemy.sql import func
 
 
 class ChatHistory(db.Model):
@@ -12,8 +13,14 @@ class ChatHistory(db.Model):
 
     user_id = db.Column(
         db.Integer,
-        nullable=True
+        db.ForeignKey("users.id"),
+        nullable=False
     )
+
+    # =====================================
+    # RELATIONSHIP
+    # =====================================
+    
 
     question = db.Column(
         db.Text,
@@ -27,5 +34,8 @@ class ChatHistory(db.Model):
 
     created_at = db.Column(
         db.DateTime,
-        server_default=db.func.now()
+        server_default=func.now()
     )
+
+    def __repr__(self):
+        return f"<ChatHistory {self.id}>"

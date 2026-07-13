@@ -28,3 +28,5 @@ huggingface-hub==0.33.4
 flask
 gunicorn
 sqlalchemy
+
+APScheduler

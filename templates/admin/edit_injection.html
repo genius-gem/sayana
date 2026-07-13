@@ -1,0 +1,215 @@
+{% extends "admin/base.html" %}
+
+{% block title %}
+Edit Injection
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+<h2>
+
+Edit Injection
+
+</h2>
+
+</div>
+
+<div class="card">
+
+<form
+
+method="POST"
+
+action="{{ url_for('admin.update_injection', injection_id=injection.id) }}"
+
+>
+
+<div class="grid grid-2">
+
+<div class="input-group">
+
+<label>
+
+Injection Date
+
+</label>
+
+<input
+
+type="date"
+
+name="injection_date"
+
+value="{{ injection.injection_date.strftime('%Y-%m-%d') }}"
+
+required
+
+>
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Injection Site
+
+</label>
+
+<select
+
+name="injection_site"
+
+>
+
+<option {% if injection.injection_site=="Left Arm" %}selected{% endif %}>
+
+Left Arm
+
+</option>
+
+<option {% if injection.injection_site=="Right Arm" %}selected{% endif %}>
+
+Right Arm
+
+</option>
+
+<option {% if injection.injection_site=="Left Thigh" %}selected{% endif %}>
+
+Left Thigh
+
+</option>
+
+<option {% if injection.injection_site=="Right Thigh" %}selected{% endif %}>
+
+Right Thigh
+
+</option>
+
+<option {% if injection.injection_site=="Abdomen" %}selected{% endif %}>
+
+Abdomen
+
+</option>
+
+</select>
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Administered By
+
+</label>
+
+<input
+
+type="text"
+
+name="administered_by"
+
+value="{{ injection.administered_by }}"
+
+>
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Status
+
+</label>
+
+<select
+
+name="status"
+
+>
+
+<option value="Completed"
+
+{% if injection.status=="Completed" %}selected{% endif %}>
+
+Completed
+
+</option>
+
+<option value="Upcoming"
+
+{% if injection.status=="Upcoming" %}selected{% endif %}>
+
+Upcoming
+
+</option>
+
+<option value="Missed"
+
+{% if injection.status=="Missed" %}selected{% endif %}>
+
+Missed
+
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+<div class="input-group">
+
+<label>
+
+Notes
+
+</label>
+
+<textarea
+
+name="notes"
+
+rows="5"
+
+>{{ injection.notes }}</textarea>
+
+</div>
+
+<div class="form-actions">
+
+<button
+
+class="btn btn-primary"
+
+type="submit"
+
+>
+
+Save Changes
+
+</button>
+
+<a
+
+href="{{ url_for('admin.user_injections', user_id=injection.user_id) }}"
+
+class="btn btn-outline"
+
+>
+
+Cancel
+
+</a>
+
+</div>
+
+</form>
+
+</div>
+
+{% endblock %}

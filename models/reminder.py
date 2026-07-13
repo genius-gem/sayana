@@ -18,7 +18,8 @@ class Reminder(db.Model):
     )
 
     last_injection_date = db.Column(
-        db.Date
+        db.Date,
+        nullable=True
     )
 
     next_injection_date = db.Column(
@@ -31,7 +32,29 @@ class Reminder(db.Model):
         default=False
     )
 
+    whatsapp_enabled = db.Column(
+        db.Boolean,
+        default=True
+    )
+
+    email_enabled = db.Column(
+        db.Boolean,
+        default=True
+    )
+
     created_at = db.Column(
         db.DateTime,
         server_default=func.now()
     )
+
+    updated_at = db.Column(
+        db.DateTime,
+        server_default=func.now(),
+        onupdate=func.now()
+    )
+
+    def __repr__(self):
+        return (
+            f"<Reminder User={self.user_id} "
+            f"Next={self.next_injection_date}>"
+        )

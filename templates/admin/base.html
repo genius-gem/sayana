@@ -1,0 +1,276 @@
+from functools import wraps
+
+from flask import (
+    Blueprint,
+    render_template,
+    redirect,
+    url_for,
+    session,
+    flash
+)
+
+from models.user import User
+from models.reminder import Reminder
+from models.chat_history import ChatHistory
+from models.activity import Activity
+
+from config.database import db
+
+
+# ==========================================================
+# ADMIN BLUEPRINT
+# ==========================================================
+
+admin_bp = Blueprint(
+    "admin",
+    __name__,
+    url_prefix="/admin"
+)
+
+
+# ==========================================================
+# ADMIN LOGIN REQUIRED
+# ==========================================================
+
+def admin_required(view):
+
+    @wraps(view)
+    def wrapped_view(*args, **kwargs):
+
+        user_id = session.get("user_id")
+
+        if user_id is None:
+
+            flash(
+                "Please login first.",
+                "warning"
+            )
+
+            return redirect(
+                url_for("auth.login")
+            )
+
+        user = User.query.get(user_id)
+
+        if user is None:
+
+            session.clear()
+
+            flash(
+                "Session expired.",
+                "danger"
+            )
+
+            return redirect(
+                url_for("auth.login")
+            )
+
+        if not user.is_admin:
+
+            flash(
+                "Administrator access required.",
+                "danger"
+            )
+
+            return redirect(
+                url_for("dashboard")
+            )
+
+        return view(*args, **kwargs)
+
+    return wrapped_view
+
+
+# ==========================================================
+# ADMIN DASHBOARD
+# ==========================================================
+
+@admin_bp.route("/")
+@admin_required
+def dashboard():
+
+    total_users = User.query.filter_by(
+        is_admin=False
+    ).count()
+
+    active_reminders = Reminder.query.count()
+
+    total_chats = ChatHistory.query.count()
+
+    total_activities = Activity.query.count()
+
+    reminders = Reminder.query.all()
+
+    due_today = 0
+    upcoming = 0
+    overdue = 0
+
+    for reminder in reminders:
+
+        status = reminder.status()
+
+        if status == "Due Today":
+            due_today += 1
+
+        elif status == "Upcoming":
+            upcoming += 1
+
+        elif status == "Missed":
+            overdue += 1
+
+    return render_template(
+
+        "admin/dashboard.html",
+
+        total_users=total_users,
+
+        active_reminders=active_reminders,
+
+        total_chats=total_chats,
+
+        total_activities=total_activities,
+
+        due_today=due_today,
+
+        upcoming=upcoming,
+
+        overdue=overdue
+    )
+
+
+# ==========================================================
+# USER MANAGEMENT
+# ==========================================================
+
+@admin_bp.route("/users")
+@admin_required
+def users():
+
+    users = (
+
+        User.query
+
+        .order_by(
+            User.full_name.asc()
+        )
+
+        .all()
+
+    )
+
+    return render_template(
+
+        "admin/users.html",
+
+        users=users
+
+    )
+
+
+# ==========================================================
+# REMINDER MANAGEMENT
+# ==========================================================
+
+@admin_bp.route("/reminders")
+@admin_required
+def reminders():
+
+    reminders = (
+
+        Reminder.query
+
+        .order_by(
+            Reminder.next_injection_date.asc()
+        )
+
+        .all()
+
+    )
+
+    return render_template(
+
+        "admin/reminders.html",
+
+        reminders=reminders
+
+    )
+
+
+# ==========================================================
+# CHAT HISTORY
+# ==========================================================
+
+@admin_bp.route("/chats")
+@admin_required
+def chats():
+
+    chats = (
+
+        ChatHistory.query
+
+        .order_by(
+            ChatHistory.created_at.desc()
+        )
+
+        .all()
+
+    )
+
+    return render_template(
+
+        "admin/chats.html",
+
+        chats=chats
+
+    )
+
+
+# ==========================================================
+# KNOWLEDGE BASE
+# ==========================================================
+
+@admin_bp.route("/knowledge")
+@admin_required
+def knowledge():
+
+    return render_template(
+        "admin/knowledge.html"
+    )
+
+
+# ==========================================================
+# REPORTS
+# ==========================================================
+
+@admin_bp.route("/reports")
+@admin_required
+def reports():
+
+    return render_template(
+        "admin/reports.html"
+    )
+
+
+# ==========================================================
+# SETTINGS
+# ==========================================================
+
+@admin_bp.route("/settings")
+@admin_required
+def settings():
+
+    return render_template(
+        "admin/settings.html"
+    )
+
+    <li>
+
+<a href="{{ url_for('admin.reminder_logs') }}">
+
+<i class="fas fa-paper-plane"></i>
+
+Reminder Logs
+
+</a>
+
+</li>

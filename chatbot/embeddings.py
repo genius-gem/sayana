@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 
 import numpy as np
-from sentence_transformers import SentenceTransformer
+from fastembed import TextEmbedding
 
 
 # =====================================
@@ -34,9 +34,7 @@ class EmbeddingModel:
 
         print("Loading embedding model...")
 
-        self.model = SentenceTransformer(
-            "all-MiniLM-L6-v2"
-        )
+        self.model = TextEmbedding()
 
         print("Embedding model loaded successfully.")
 
@@ -48,13 +46,20 @@ class EmbeddingModel:
         Generate embedding for a user question.
         """
 
-        embedding = self.model.encode(
-            query,
-            convert_to_numpy=True,
-            normalize_embeddings=True
+        embedding = list(
+            self.model.embed([query])
+        )[0]
+
+        embedding = np.array(
+            embedding,
+            dtype="float32"
         )
 
-        return embedding.reshape(1, -1).astype("float32")
+        embedding = embedding / np.linalg.norm(
+            embedding
+        )
+
+        return embedding.reshape(1, -1)
 
     # ---------------------------------
 
@@ -64,13 +69,20 @@ class EmbeddingModel:
         Generate embeddings for multiple documents.
         """
 
-        embeddings = self.model.encode(
-            documents,
-            convert_to_numpy=True,
-            normalize_embeddings=True
+        embeddings = np.array(
+            list(self.model.embed(documents)),
+            dtype="float32"
         )
 
-        return embeddings.astype("float32")
+        norms = np.linalg.norm(
+            embeddings,
+            axis=1,
+            keepdims=True
+        )
+
+        embeddings = embeddings / norms
+
+        return embeddings
 
     # ---------------------------------
 
@@ -80,7 +92,11 @@ class EmbeddingModel:
         Read chunks.json and generate embeddings.
         """
 
-        with open(CHUNKS_PATH, "r", encoding="utf-8") as file:
+        with open(
+            CHUNKS_PATH,
+            "r",
+            encoding="utf-8"
+        ) as file:
 
             chunks = json.load(file)
 
@@ -101,7 +117,9 @@ Content:
 
             documents.append(text)
 
-        embeddings = self.embed_documents(documents)
+        embeddings = self.embed_documents(
+            documents
+        )
 
         np.save(
             EMBEDDINGS_PATH,
@@ -136,7 +154,9 @@ Content:
                 "embeddings.npy not found."
             )
 
-        return np.load(EMBEDDINGS_PATH)
+        return np.load(
+            EMBEDDINGS_PATH
+        )
 
 
 # =====================================

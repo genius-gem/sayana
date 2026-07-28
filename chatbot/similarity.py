@@ -1,30 +1,54 @@
-from sentence_transformers import SentenceTransformer
-from sklearn.metrics.pairwise import cosine_similarity
+"""
+similarity.py
+
+Computes semantic similarity using FastEmbed.
+"""
+
 import numpy as np
+from fastembed import TextEmbedding
 
 
 class SimilarityChecker:
 
     def __init__(self):
 
-        self.model = SentenceTransformer(
-            "all-MiniLM-L6-v2"
+        print("Loading similarity model...")
+
+        self.model = TextEmbedding()
+
+        print("Similarity model loaded successfully.")
+
+    # -----------------------------------------
+
+    def _embed(self, text):
+
+        embedding = list(
+            self.model.embed([text])
+        )[0]
+
+        embedding = np.array(
+            embedding,
+            dtype="float32"
         )
+
+        embedding = embedding / np.linalg.norm(
+            embedding
+        )
+
+        return embedding
 
     # -----------------------------------------
 
     def similarity_score(self, text1, text2):
 
-        embeddings = self.model.encode(
-            [text1, text2],
-            convert_to_numpy=True,
-            normalize_embeddings=True
-        )
+        emb1 = self._embed(text1)
 
-        score = cosine_similarity(
-            [embeddings[0]],
-            [embeddings[1]]
-        )[0][0]
+        emb2 = self._embed(text2)
+
+        score = np.dot(
+            emb1,
+            emb2
+        )
 
         return float(score)
 

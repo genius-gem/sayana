@@ -3,13 +3,9 @@ from sqlalchemy.sql import func
 
 
 class User(db.Model):
-
     __tablename__ = "users"
 
-    id = db.Column(
-        db.Integer,
-        primary_key=True
-    )
+    id = db.Column(db.Integer, primary_key=True)
 
     full_name = db.Column(
         db.String(150),
@@ -19,7 +15,8 @@ class User(db.Model):
     email = db.Column(
         db.String(150),
         unique=True,
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     password = db.Column(
@@ -52,19 +49,17 @@ class User(db.Model):
         default=False
     )
 
+    is_active = db.Column(
+        db.Boolean,
+        default=True
+    )
+
     created_at = db.Column(
         db.DateTime,
         server_default=func.now()
     )
 
-    is_active = db.Column(
-    db.Boolean,
-    default=True
-    )
-
-    # ----------------------------------
-    # Relationships
-    # ----------------------------------
+    # ---------------- Relationships ---------------- #
 
     reminders = db.relationship(
         "Reminder",

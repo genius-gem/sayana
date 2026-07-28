@@ -1,5 +1,8 @@
 import os
+from dotenv import load_dotenv
 from datetime import date, datetime, timedelta
+
+load_dotenv()
 
 from flask import (
     Flask,
@@ -64,6 +67,13 @@ app.secret_key = os.getenv(
     "SECRET_KEY",
     "change-this-secret-key"
 )
+
+print("=" * 60)
+print("DATABASE URI:")
+print(app.config["SQLALCHEMY_DATABASE_URI"])
+print("SECRET_KEY =", os.getenv("SECRET_KEY"))
+print("APP SECRET =", app.secret_key)
+print("=" * 60)
 
 db.init_app(app)
 

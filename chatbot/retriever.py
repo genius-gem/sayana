@@ -2,7 +2,7 @@
 retriever.py
 
 Retrieves the most relevant knowledge chunks
-from the FAISS vector database.
+from the HNSW vector database.
 """
 
 import json
@@ -37,8 +37,15 @@ class Retriever:
 
         self.vector_store.load_index()
 
-        with open(CHUNKS_PATH, "r", encoding="utf-8") as file:
+        with open(
+            CHUNKS_PATH,
+            "r",
+            encoding="utf-8"
+        ) as file:
+
             self.chunks = json.load(file)
+
+    # -----------------------------------
 
     def retrieve(self, query, top_k=5):
 
@@ -46,7 +53,9 @@ class Retriever:
         Retrieve the most relevant chunks.
         """
 
-        query_embedding = self.embedding_model.embed_query(query)
+        query_embedding = self.embedding_model.embed_query(
+            query
+        )
 
         distances, indices = self.vector_store.search(
             query_embedding,
@@ -55,16 +64,27 @@ class Retriever:
 
         results = []
 
-        for score, index in zip(distances[0], indices[0]):
+        for distance, index in zip(
+            distances[0],
+            indices[0]
+        ):
 
             if index == -1:
                 continue
 
             chunk = self.chunks[index].copy()
 
-            chunk["score"] = float(score)
+            # Convert cosine distance into similarity
+            chunk["score"] = float(
+                1.0 - distance
+            )
 
             results.append(chunk)
+
+        results.sort(
+            key=lambda x: x["score"],
+            reverse=True
+        )
 
         return results
 
@@ -89,6 +109,6 @@ if __name__ == "__main__":
 
         print("Category:", result["category"])
 
-        print("Score:", result["score"])
+        print("Similarity:", result["score"])
 
         print(result["content"])

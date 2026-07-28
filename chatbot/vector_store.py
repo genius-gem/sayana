@@ -1,13 +1,15 @@
 """
 vector_store.py
 
-Creates, saves, loads and searches the FAISS vector database.
+Creates, saves, loads and searches the vector database
+using scikit-learn NearestNeighbors.
 """
 
 from pathlib import Path
 
-import faiss
+import joblib
 import numpy as np
+from sklearn.neighbors import NearestNeighbors
 
 
 # ============================
@@ -19,7 +21,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 PROCESSED_DIR = BASE_DIR / "knowledge_base" / "processed"
 
 EMBEDDINGS_PATH = PROCESSED_DIR / "embeddings.npy"
-INDEX_PATH = PROCESSED_DIR / "faiss.index"
+
+INDEX_PATH = PROCESSED_DIR / "nearest_neighbors.pkl"
 
 
 # ============================
@@ -27,59 +30,105 @@ INDEX_PATH = PROCESSED_DIR / "faiss.index"
 # ============================
 
 class VectorStore:
+
     def __init__(self):
+
         self.index = None
 
+    # ------------------------------------
+
     def create_index(self):
+
         """
-        Create a FAISS index from embeddings.
+        Create a NearestNeighbors index.
         """
-        embeddings = np.load(EMBEDDINGS_PATH).astype("float32")
 
-        dimension = embeddings.shape[1]
+        embeddings = np.load(
+            EMBEDDINGS_PATH
+        ).astype("float32")
 
-        self.index = faiss.IndexFlatL2(dimension)
+        self.index = NearestNeighbors(
 
-        self.index.add(embeddings)
+            n_neighbors=5,
 
-        faiss.write_index(self.index, str(INDEX_PATH))
+            metric="cosine",
 
-        print(f"✅ FAISS index created successfully.")
+            algorithm="brute"
+
+        )
+
+        self.index.fit(
+            embeddings
+        )
+
+        joblib.dump(
+
+            self.index,
+
+            INDEX_PATH
+
+        )
+
+        print()
+
+        print("=" * 60)
+
+        print("NearestNeighbors index created successfully.")
+
         print(f"Indexed {len(embeddings)} document chunks.")
 
+        print(f"Saved To : {INDEX_PATH}")
+
+        print("=" * 60)
+
+    # ------------------------------------
+
     def load_index(self):
+
         """
-        Load an existing FAISS index.
+        Load the saved NearestNeighbors model.
         """
+
         if not INDEX_PATH.exists():
+
             raise FileNotFoundError(
-                f"FAISS index not found: {INDEX_PATH}"
+
+                f"Index not found: {INDEX_PATH}"
+
             )
 
-        self.index = faiss.read_index(str(INDEX_PATH))
+        self.index = joblib.load(
 
-    def search(self, query_embedding, top_k=5):
+            INDEX_PATH
+
+        )
+
+    # ------------------------------------
+
+    def search(
+
+        self,
+
+        query_embedding,
+
+        top_k=5
+
+    ):
+
         """
         Search the vector database.
-
-        Parameters
-        ----------
-        query_embedding : numpy.ndarray
-        top_k : int
-
-        Returns
-        -------
-        distances, indices
         """
 
         if self.index is None:
+
             self.load_index()
 
-        query_embedding = query_embedding.astype("float32")
+        distances, indices = self.index.kneighbors(
 
-        distances, indices = self.index.search(
             query_embedding,
-            top_k
+
+            n_neighbors=top_k
+
         )
 
         return distances, indices
